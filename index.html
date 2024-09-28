@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Personal Portfolio</title>
+  
+  <!-- Google Fonts for Material Icons and Typography -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Reset default margins and paddings */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Body and HTML styles */
+    body, html {
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Canvas for gradient background */
+    #gradient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none; /* Ensure the canvas doesn't interfere with user interactions */
+    }
+
+    /* Header styles */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      /* Removed background-color to make header transparent */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+      z-index: 1000; /* Higher than canvas */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Logo styles */
+    .logo {
+      margin-bottom: 8px;
+    }
+
+    .logo img {
+      height: 50px;
+    }
+
+    /* Navigation styles */
+    nav {
+      width: 100%;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+    }
+
+    nav ul li {
+      margin: 0 15px;
+      position: relative;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #333; /* Changed from white to dark grey */
+      font-weight: 500;
+      font-size: 18px;
+      padding: 8px 12px;
+      border-radius: 4px;
+      transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
+      display: flex;
+      align-items: center;
+    }
+
+    nav ul li a:hover {
+      background-color: rgba(51, 51, 51, 0.1); /* Adjusted for dark grey background */
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Optional: Adding Material Icons */
+    nav ul li a .material-icons {
+      margin-right: 6px;
+      font-size: 20px;
+    }
+
+    /* Main content styles */
+    main {
+      margin-top: 100px; /* Height of the header */
+      height: calc(100% - 100px);
+      position: relative;
+      z-index: 1; /* Above the canvas */
+      overflow: hidden;
+    }
+
+    /* Text content styles */
+    .content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 0 20px;
+    }
+
+    .content h1 {
+      font-size: 64px;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .content h1 {
+        font-size: 48px;
+      }
+
+      nav ul li a {
+        font-size: 16px;
+        padding: 6px 10px;
+      }
+
+      .logo img {
+        height: 40px;
+      }
+
+      header {
+        padding: 8px 0;
+      }
+
+      main {
+        margin-top: 120px; /* Increased to accommodate stacked header */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .content h1 {
+        font-size: 32px;
+      }
+
+      nav ul li {
+        margin: 0 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Gradient Canvas -->
+  <canvas id="gradient-canvas"></canvas>
+
+  <!-- Header -->
+  <header>
+    <div class="logo">
+      <!-- Replace with your logo image -->
+      <img src="logo.png" alt="Logo">
+    </div>
+    <nav>
+      <ul>
+        <li><a href="#about"><i class="material-icons">person</i> About</a></li>
+        <li><a href="#projects"><i class="material-icons">work</i> Projects</a></li>
+        <li><a href="#blog"><i class="material-icons">article</i> Blog</a></li>
+        <li><a href="#contact"><i class="material-icons">contact_mail</i> Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <div class="content">
+      <h1>build a better world</h1>
+    </div>
+  </main>
+
+  <script>
+    // JavaScript for the smooth, slowly morphing gradient background
+
+    const canvas = document.getElementById('gradient-canvas');
+    const ctx = canvas.getContext('2d');
+
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Gradient parameters
+    let hue = 0; // Starting hue
+    const hueSpeed = 0.05; // Slower hue change for smoother transitions
+    let angle = 0; // Starting angle for gradient center movement
+    const angleSpeed = 0.0002; // Slower angle change for gentle motion
+
+    function draw() {
+      // Clear the canvas
+      ctx.clearRect(0, 0, width, height);
+
+      // Update hue
+      hue += hueSpeed;
+      if (hue >= 360) hue -= 360;
+
+      // Update angle for gradient center movement
+      angle += angleSpeed;
+      if (angle >= 2 * Math.PI) angle -= 2 * Math.PI;
+
+      // Calculate gradient center position (slow circular motion)
+      const radius = Math.min(width, height) / 6; // Smaller radius for subtle movement
+      const centerX = width / 2 + radius * Math.cos(angle);
+      const centerY = height / 2 + radius * Math.sin(angle);
+
+      // Create radial gradient
+      const gradient = ctx.createRadialGradient(
+        centerX, centerY, width / 20, // Inner circle with smaller radius
+        centerX, centerY, Math.max(width, height) / 1.5 // Outer circle
+      );
+
+      // Define gradient color stops with smooth hue transitions
+      gradient.addColorStop(0, `hsla(${hue}, 70%, 80%, 0.2)`);
+      gradient.addColorStop(0.5, `hsla(${(hue + 60) % 360}, 70%, 80%, 0.2)`);
+      gradient.addColorStop(1, `hsla(${(hue + 120) % 360}, 70%, 80%, 0.2)`);
+
+      // Apply the gradient
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+
+      // Request the next frame
+      requestAnimationFrame(draw);
+    }
+
+    // Start the animation
+    draw();
+  </script>
+
+</body>
+</html>
