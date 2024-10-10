@@ -1,5 +1,3 @@
-// gol.js
-
 const canvas = document.getElementById('gameOfLifeCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -103,10 +101,21 @@ function computeNextGeneration() {
   [currentGrid, nextGrid] = [nextGrid, currentGrid];
 }
 
+// Timing variables to control update rate
+let lastUpdateTime = 0;
+const interval = 100; // Adjust this value to make the simulation slower or faster (milliseconds)
+
 // Animation loop
-function animate() {
-  computeNextGeneration();
-  drawGrid();
+function animate(timestamp) {
+  if (!lastUpdateTime) lastUpdateTime = timestamp;
+  const delta = timestamp - lastUpdateTime;
+
+  if (delta > interval) {
+    computeNextGeneration();
+    drawGrid();
+    lastUpdateTime = timestamp;
+  }
+
   requestAnimationFrame(animate);
 }
 
@@ -117,4 +126,4 @@ window.addEventListener('resize', () => {
 
 // Initialize and start animation
 initializeCanvas();
-animate();
+requestAnimationFrame(animate);

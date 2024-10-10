@@ -30,25 +30,57 @@
       z-index: -1; /* Place the canvas behind other content */
       background-color: #ffffff; /* Match the body background */
     }
+
+    /* Acrylic glass effect with noise grain */
+    .acrylic-glass {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.2); /* Semi-transparent white */
+      backdrop-filter: blur(15px) saturate(170%); /* Blur and saturation for glass effect */
+      -webkit-backdrop-filter: blur(15px) saturate(150%); /* For Safari */
+      z-index: 0; /* Position between the canvas and content */
+      /* background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23fff'/%3E%3Cpath d='M 0 0 L 0 0' stroke-width='1' stroke='%23ddd'/%3E%3C/svg%3E"),  */
+        /* repeating-linear-gradient(135deg, rgba(0, 0, 0, 0.05) 1px, transparent 5px, transparent 5px, rgba(0, 0, 0, 0.05) 2px); */
+      background-blend-mode: overlay;
+      opacity: 0.53; /* Slight opacity to enhance the effect */
+    }
   </style>
+  
+  <!-- VERCEL ANALYTICS PACKAGE -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+
 </head>
 <body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
   <!-- Canvas for Game of Life -->
   <canvas id="gameOfLifeCanvas"></canvas>
 
+  <!-- Acrylic Glass Overlay -->
+  <div class="acrylic-glass"></div>
+
+  <!-- Back Arrow -->
+  <a href="./index.html" class="absolute top-4 left-4 text-gray-800 hover:text-gray-600 transition duration-300 z-10">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 fill-current" viewBox="0 0 20 20">
+    <path fill-rule="evenodd" d="M7.707 16.293a1 1 0 01-1.414 0l-5-5a1 1 0 010-1.414l5-5a1 1 0 111.414 1.414L4.414 10H16a1 1 0 110 2H4.414l3.293 2.879a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+  </a>
+
   <div class="container mx-auto p-4 z-10 relative">
-    <h1 class="text-4xl font-semibold mb-8 text-center">PROJECTS</h1>
+    <h1 class="text-4xl font-bold mb-8 text-center">PROJECTS</h1>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       
       <!-- AI Built Games Project Card -->
       <a href="https://harmonichemispheres.github.io/AI-Built-Games/index.html" target="_blank" class="block">
         <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center h-64">
-          <!-- Optional: Add an icon or image representing the project -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
-            <!-- Example Icon: Game Controller -->
             <path d="M17 10h-1V9a4 4 0 10-8 0v1H7a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2zm-8-1a2 2 0 114 0v1h-4V9zm6 8H7v-4h10v4z"/>
           </svg>
-          <span class="text-2xl font-semibold mb-2">AI Built Games</span>
+          <span class="text-2xl font-bold mb-2">AI Built Games</span>
           <p class="text-center text-gray-600">Explore games developed with AI technologies.</p>
         </div>
       </a>
@@ -56,12 +88,10 @@
       <!-- Magic Pill Labs Project Card -->
       <a href="https://magicpilllabs.com/" target="_blank" class="block">
         <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center h-64">
-          <!-- Optional: Add an icon or image representing the project -->
           <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
-            <!-- Example Icon: Lab Flask -->
             <path d="M17 2H7v2h10V2zm1 4H6l-1 14a2 2 0 002 2h12a2 2 0 002-2L18 6zm-3 12H9v-2h6v2zm0-4H9v-2h6v2zm0-4H9V8h6v2z"/>
           </svg>
-          <span class="text-2xl font-semibold mb-2">Magic Pill Labs</span>
+          <span class="text-2xl font-bold mb-2">Magic Pill Labs</span>
           <p class="text-center text-gray-600">Innovative solutions and projects at Magic Pill Labs.</p>
         </div>
       </a>
