@@ -1,0 +1,1163 @@
+File: .\about.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About - Robby Boney</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex flex-col">
+  <!-- Navigation Bar (Optional) -->
+  <nav class="bg-gray-100 p-4 shadow">
+    <div class="container mx-auto">
+      <a href="index.html" class="text-xl font-bold text-gray-800">Home</a>
+    </div>
+  </nav>
+
+  <div class="container mx-auto p-8 flex-grow">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl font-bold mb-6">About Me</h1>
+      <p class="text-lg leading-relaxed mb-4">
+        <!-- Your actual bio or description goes here -->
+        Hello! I'm Robby Boney, a passionate developer with a keen interest in creating impactful projects. With a background in software engineering and a love for continuous learning, I strive to build solutions that make a difference. Whether it's developing web applications, contributing to open-source projects, or exploring new technologies, I am always eager to take on new challenges and expand my skill set.
+      </p>
+      <!-- Optional: Add more paragraphs or sections as needed -->
+      <p class="text-lg leading-relaxed">
+        In my free time, I enjoy hiking, reading, and experimenting with new programming languages and frameworks. I believe in the power of collaboration and am always open to connecting with like-minded individuals to share ideas and work on exciting ventures.
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer (Optional) -->
+  <footer class="bg-gray-100 p-4 text-center">
+    <p class="text-sm text-gray-600">&copy; 2024 Robby Boney. All rights reserved.</p>
+  </footer>
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+
+File: .\blog.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blog - Robby Boney's Website</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ensure the canvas covers the entire background */
+    #gameOfLifeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Place the canvas behind other content */
+      background-color: #ffffff; /* Match the body background */
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
+  <!-- Canvas for Game of Life -->
+  <canvas id="gameOfLifeCanvas"></canvas>
+
+  <div class="container mx-auto p-4 z-10 relative">
+    <h1 class="text-4xl font-semibold mb-8 text-center">Blog</h1>
+    
+    <!-- Medium Blog Button -->
+    <div class="flex justify-center mb-12">
+      <a href="https://medium.com/@robbyb_77782" target="_blank" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-lg shadow-lg transition duration-300 text-xl">
+        Visit My Medium Blog
+      </a>
+    </div>
+    
+    <!-- Other Writings Section -->
+    <section>
+      <h2 class="text-3xl font-semibold mb-6 text-center">Other Writings</h2>
+      <div class="space-y-4">
+        
+        <!-- First Article -->
+        <a href="https://medium.com/@robbyb_77782/a-product-managers-top-ways-to-grow-your-career-e73880f8585b" target="_blank" class="block bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6">
+          <h3 class="text-2xl font-semibold text-indigo-600 mb-2">A Product Manager's Top Ways to Grow Your Career</h3>
+          <p class="text-gray-600">Discover effective strategies to advance your career as a product manager.</p>
+        </a>
+        
+        <!-- Second Article -->
+        <a href="https://medium.com/short-bits/a-simple-way-to-report-tests-across-python-versions-with-pytest-and-tox-6cb462ced05e" target="_blank" class="block bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6">
+          <h3 class="text-2xl font-semibold text-green-600 mb-2">A Simple Way to Report Tests Across Python Versions with Pytest and Tox</h3>
+          <p class="text-gray-600">Learn how to efficiently manage and report your Python tests across multiple versions.</p>
+        </a>
+        
+      </div>
+    </section>
+  </div>
+
+  <!-- Import Game of Life Script -->
+  <script src="gol.js"></script>
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+
+File: .\contact.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Contact - Robby Boney</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white text-gray-800 min-h-screen">
+  <div class="container mx-auto p-8">
+    <h1 class="text-4xl font-bold mb-4">Contact</h1>
+    <p class="text-lg">Feel free to reach out via <a href="mailto:your-email@example.com" class="text-blue-500 underline">email</a>.</p>
+  </div>
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+
+File: .\gol.js
+--------------------------------------------------------------------------------
+// gol.js
+
+const canvas = document.getElementById('gameOfLifeCanvas');
+const ctx = canvas.getContext('2d');
+
+let width, height;
+const cellSize = 10; // Size of each cell in pixels
+let cols, rows;
+let currentGrid, nextGrid;
+
+// Define a palette of colors with opacity for live cells
+const colors = [
+  'rgba(45, 45, 45, 0.2)',    // Charcoal
+  'rgba(255, 99, 71, 0.2)',   // Tomato
+  'rgba(30, 144, 255, 0.2)',  // DodgerBlue
+  'rgba(34, 139, 34, 0.2)',   // ForestGreen
+  'rgba(238, 130, 238, 0.2)', // Violet
+  'rgba(255, 215, 0, 0.2)'    // Gold
+];
+
+// Initialize the canvas size
+function initializeCanvas() {
+  width = window.innerWidth;
+  height = window.innerHeight;
+  canvas.width = width;
+  canvas.height = height;
+
+  cols = Math.floor(width / cellSize);
+  rows = Math.floor(height / cellSize);
+
+  // Initialize grids
+  currentGrid = createGrid();
+  nextGrid = createGrid();
+
+  // Randomly populate the current grid
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      currentGrid[x][y] = Math.random() < 0.2 ? 1 : 0; // 20% chance to be alive
+    }
+  }
+}
+
+// Create a 2D array
+function createGrid() {
+  let grid = new Array(cols);
+  for (let x = 0; x < cols; x++) {
+    grid[x] = new Array(rows).fill(0);
+  }
+  return grid;
+}
+
+// Draw the grid on the canvas
+function drawGrid() {
+  ctx.fillStyle = '#ffffff'; // Background color
+  ctx.fillRect(0, 0, width, height);
+
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      if (currentGrid[x][y] === 1) {
+        // Choose color based on position to get varied colors
+        const colorIndex = (x + y) % colors.length;
+        ctx.fillStyle = colors[colorIndex];
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+      }
+    }
+  }
+}
+
+// Compute the next generation
+function computeNextGeneration() {
+  for (let x = 0; x < cols; x++) {
+    for (let y = 0; y < rows; y++) {
+      let neighbors = 0;
+
+      // Count live neighbors
+      for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+          if (i === 0 && j === 0) continue;
+          let col = (x + i + cols) % cols;
+          let row = (y + j + rows) % rows;
+          neighbors += currentGrid[col][row];
+        }
+      }
+
+      // Apply Game of Life rules
+      if (currentGrid[x][y] === 1) {
+        if (neighbors < 2 || neighbors > 3) {
+          nextGrid[x][y] = 0; // Die
+        } else {
+          nextGrid[x][y] = 1; // Stay alive
+        }
+      } else {
+        if (neighbors === 3) {
+          nextGrid[x][y] = 1; // Become alive
+        } else {
+          nextGrid[x][y] = 0; // Stay dead
+        }
+      }
+    }
+  }
+
+  // Swap grids
+  [currentGrid, nextGrid] = [nextGrid, currentGrid];
+}
+
+// Animation loop
+function animate() {
+  computeNextGeneration();
+  drawGrid();
+  requestAnimationFrame(animate);
+}
+
+// Handle window resize
+window.addEventListener('resize', () => {
+  initializeCanvas();
+});
+
+// Initialize and start animation
+initializeCanvas();
+animate();
+
+--------------------------------------------------------------------------------
+
+File: .\index.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Robby Boney's Website</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ensure the canvas covers the entire background */
+    #gameOfLifeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Place the canvas behind other content */
+      background-color: #ffffff; /* Match the body background */
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
+  <!-- Canvas for Game of Life -->
+  <canvas id="gameOfLifeCanvas"></canvas>
+
+  <div class="container mx-auto p-4 z-10 relative">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Blog Card -->
+      <a href="./blog.html" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-48">
+          <span class="text-xl font-semibold">Blog</span>
+        </div>
+      </a>
+      
+      <!-- Projects Card -->
+      <a href="./projects.html" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-48">
+          <span class="text-xl font-semibold">Projects</span>
+        </div>
+      </a>
+      
+      <!-- GitHub Card -->
+      <a href="https://github.com/HarmonicHemispheres" target="_blank" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center w-full h-48">
+          <!-- GitHub Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 
+            0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 
+            0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 
+            17.07 3.633 16.7 3.633 16.7c-1.087-.744.084-.729.084-.729 
+            1.205.084 1.838 1.236 1.838 1.236 
+            1.07 1.835 2.809 1.305 3.495.998 
+            .108-.776.42-1.305.762-1.605-2.665-.3-5.467-1.332-5.467-5.93 
+            0-1.31.468-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 
+            0 0 1.005-.322 3.3 1.23a11.52 11.52 0 013.003-.404 
+            c1.02.005 2.045.138 3.003.404 
+            2.28-1.552 3.285-1.23 3.285-1.23 
+            .645 1.653.24 2.873.12 3.176 
+            .765.84 1.23 1.91 1.23 3.22 
+            0 4.61-2.805 5.625-5.475 5.92 
+            .435.372.81 1.102.81 2.222 
+            0 1.606-.015 2.896-.015 3.286 
+            0 .315.21.694.825.576C20.565 22.092 
+            24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+          <span class="text-lg">GitHub</span>
+        </div>
+      </a>
+      
+      <!-- About Card -->
+      <a href="./about.html" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-48">
+          <span class="text-xl font-semibold">About</span>
+        </div>
+      </a>
+      
+      <!-- Contact Card -->
+      <a href="./contact.html" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-48">
+          <span class="text-xl font-semibold">Contact</span>
+        </div>
+      </a>
+      
+      <!-- LinkedIn Card -->
+      <a href="https://www.linkedin.com/in/robby-boney-717486133/" target="_blank" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center w-full h-48">
+          <!-- LinkedIn Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 
+            5v14c0 2.761 2.239 5 5 5h14c2.761 
+            0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 
+            19h-3v-10h3v10zm-1.5-11.268c-.966 
+            0-1.75-.784-1.75-1.75s.784-1.75 
+            1.75-1.75 1.75.784 
+            1.75 1.75-.784 1.75-1.75 
+            1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.065-1.87-3.065-1.872 
+            0-2.158 1.459-2.158 
+            2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 
+            1.381-1.561 2.841-1.561 3.041 
+            0 3.603 2.0 3.603 4.605v5.592z"/>
+          </svg>
+          <span class="text-lg">LinkedIn</span>
+        </div>
+      </a>
+      
+    </div>
+  </div>
+
+  <!-- Import Game of Life Script -->
+  <script src="gol.js"></script>
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+
+File: .\projects.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects - Robby Boney's Website</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ensure the canvas covers the entire background */
+    #gameOfLifeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Place the canvas behind other content */
+      background-color: #ffffff; /* Match the body background */
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
+  <!-- Canvas for Game of Life -->
+  <canvas id="gameOfLifeCanvas"></canvas>
+
+  <div class="container mx-auto p-4 z-10 relative">
+    <h1 class="text-4xl font-semibold mb-8 text-center">PROJECTS</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      
+      <!-- AI Built Games Project Card -->
+      <a href="https://harmonichemispheres.github.io/AI-Built-Games/index.html" target="_blank" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center h-64">
+          <!-- Optional: Add an icon or image representing the project -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Example Icon: Game Controller -->
+            <path d="M17 10h-1V9a4 4 0 10-8 0v1H7a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2zm-8-1a2 2 0 114 0v1h-4V9zm6 8H7v-4h10v4z"/>
+          </svg>
+          <span class="text-2xl font-semibold mb-2">AI Built Games</span>
+          <p class="text-center text-gray-600">Explore games developed with AI technologies.</p>
+        </div>
+      </a>
+      
+      <!-- Magic Pill Labs Project Card -->
+      <a href="https://magicpilllabs.com/" target="_blank" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center h-64">
+          <!-- Optional: Add an icon or image representing the project -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Example Icon: Lab Flask -->
+            <path d="M17 2H7v2h10V2zm1 4H6l-1 14a2 2 0 002 2h12a2 2 0 002-2L18 6zm-3 12H9v-2h6v2zm0-4H9v-2h6v2zm0-4H9V8h6v2z"/>
+          </svg>
+          <span class="text-2xl font-semibold mb-2">Magic Pill Labs</span>
+          <p class="text-center text-gray-600">Innovative solutions and projects at Magic Pill Labs.</p>
+        </div>
+      </a>
+      
+    </div>
+  </div>
+
+  <!-- Import Game of Life Script -->
+  <script src="gol.js"></script>
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+
+File: .\script.js
+--------------------------------------------------------------------------------
+// script.js
+const canvas = document.getElementById('background-canvas');
+const ctx = canvas.getContext('2d');
+let width = canvas.width = window.innerWidth;
+let height = canvas.height = window.innerHeight;
+
+const simplex = new SimplexNoise();
+let time = 0;
+let speed = 0.0005; // Default speed
+const normalSpeed = 0.0005;
+const hoverSpeed = 0.002; // Increased speed on hover
+
+window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+});
+
+canvas.addEventListener('mouseenter', () => {
+    speed = hoverSpeed;
+});
+
+canvas.addEventListener('mouseleave', () => {
+    speed = normalSpeed;
+});
+
+function animate() {
+    const imageData = ctx.createImageData(width, height);
+    for(let y = 0; y < height; y++) {
+        for(let x = 0; x < width; x++) {
+            const value = simplex.noise3D(x * 0.005, y * 0.005, time);
+            // Lighter colors
+            const r = Math.floor(200 + 55 * Math.sin(value * Math.PI));
+            const g = Math.floor(200 + 55 * Math.sin((value + 0.33) * Math.PI));
+            const b = Math.floor(200 + 55 * Math.sin((value + 0.66) * Math.PI));
+            const index = (x + y * width) * 4;
+            imageData.data[index] = r;
+            imageData.data[index + 1] = g;
+            imageData.data[index + 2] = b;
+            imageData.data[index + 3] = 150;
+        }
+    }
+    ctx.putImageData(imageData, 0, 0);
+    time += speed;
+    requestAnimationFrame(animate);
+}
+animate();
+
+function navigate(section) {
+    alert(`Navigating to ${section}`);
+}
+
+--------------------------------------------------------------------------------
+
+File: .\css\styles.css
+--------------------------------------------------------------------------------
+/* Custom Styles */
+
+/* Ensure that all images within cards are responsive */
+.card-image img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Adjust the footer's padding for better spacing */
+.page-footer {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+/* Customize card titles */
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Add transition to buttons for smoother hover effect */
+.btn {
+    transition: background-color 0.3s ease;
+}
+
+/* Optional: Change the default blue color to your preferred shade */
+.btn.blue {
+    background-color: #1e88e5; /* Materialize default blue */
+}
+
+--------------------------------------------------------------------------------
+
+File: .\pages\ms_tool_search_small.html
+--------------------------------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Tools & Programs</title>
+    <!-- Google Fonts for Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Favicon using Material Symbols Search Icon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='%23e8eaed'><path d='M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z'/></svg>" />
+
+    <style>
+        /* Reset and Base Styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        /* Header with Search Bar, Filter Icon, and Tool Count */
+        .header {
+            background-color: #333;
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .header h1 {
+            margin-bottom: 15px;
+            font-size: 28px;
+        }
+
+        .filters {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        /* Material Design Search Bar */
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .search-container input[type="text"] {
+            width: 100%;
+            padding: 12px 40px 12px 20px;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .search-container input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Search Icon */
+        .search-container .material-icons {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #888;
+            pointer-events: none;
+        }
+
+        /* Filter Icon and Dropdown */
+        .filter-container {
+            position: relative;
+            width: 48px;
+            height: 48px;
+        }
+
+        .filter-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background-color: #333; /* Same as header background */
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .filter-icon:hover {
+            background-color: #444;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .filter-icon .material-icons {
+            color: #e8eaed; /* Same grey as header background for visibility */
+            font-size: 24px;
+        }
+
+        .filter-container select {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 200px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            appearance: none;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: none;
+            z-index: 1001;
+        }
+
+        .filter-container select:focus {
+            outline: none;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        /* Tool Count */
+        .tool-count {
+            margin-top: 10px;
+            font-size: 16px;
+            color: #ddd;
+        }
+
+        /* Grid Container */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            padding: 20px;
+            max-height: 80vh; /* Adjust as needed */
+            overflow-y: auto;
+        }
+
+        /* Card Styles */
+        .card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: 15px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 18px;
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+
+        .card-description {
+            flex-grow: 1;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: #1e90ff;
+            font-weight: bold;
+            align-self: flex-start;
+            transition: color 0.3s ease;
+        }
+
+        .card-link:hover {
+            color: #104e8b;
+        }
+
+        /* Tags Container */
+        .tags-container {
+            margin-bottom: 10px;
+        }
+
+        /* Tag Pill Styles */
+        .tag-pill {
+            display: inline-block;
+            background-color: #e0e0e0;
+            color: #555;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .tag-pill:hover {
+            background-color: #d5d5d5;
+            color: #333;
+        }
+
+        /* Ad Card Styles */
+        .ad-card {
+            background-color: #fff;
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 200px; /* Adjust height as needed */
+            color: #555;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        /* Scrollbar Styling */
+        .grid-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .grid-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .grid-container::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        .grid-container::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1200px) {
+            .grid-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+
+            .filters {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .filter-container select {
+                top: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header with Search Bar, Filter Icon, and Tool Count -->
+    <div class="header">
+        <h1>Microsoft Tools & Programs</h1>
+        <div class="filters">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search for tools and programs...">
+                <span class="material-icons">search</span>
+            </div>
+            <div class="filter-container">
+                <div class="filter-icon" id="filterIcon" title="Use Ctrl+Click to select multiple tags">
+                    <span class="material-icons">local_offer</span>
+                </div>
+                <select id="tagFilter" multiple>
+                    <option value="Database">Database</option>
+                    <option value="Free">Free</option>
+                    <option value="Utility">Utility</option>
+                    <option value="Productivity">Productivity</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Development">Development</option>
+                    <option value="Security">Security</option>
+                    <option value="Enterprise">Enterprise</option>
+                    <option value="Networking">Networking</option>
+                    <option value="Analytics">Analytics</option>
+                    <option value="Design">Design</option>
+                    <option value="Marketing">Marketing</option>
+                    <option value="Cloud">Cloud</option>
+                    <option value="Management">Management</option>
+                    <option value="Troubleshooting">Troubleshooting</option>
+                </select>
+            </div>
+        </div>
+        <div class="tool-count" id="toolCount">Showing 0 tools</div>
+    </div>
+
+    <!-- Grid of Cards -->
+    <div class="grid-container" id="cardGrid">
+        <!-- Example Card 1 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=SQL+Server+Express&bg=0000FF&color=FFFFFF&fontsize=24" alt="SQL Server Express">
+            <div class="card-content">
+                <h3 class="card-title">SQL Server Express</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Database</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">A free edition of Microsoft SQL Server ideal for small-scale database applications.</p>
+                <a href="https://www.microsoft.com/en-us/sql-server/sql-server-editions-express" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=Tool+1" alt="Tool 1">
+            <div class="card-content">
+                <h3 class="card-title">Tool Title 1</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">Short description for tool number one.</p>
+                <a href="#" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=Visual+Studio+Code" alt="Visual Studio Code">
+            <div class="card-content">
+                <h3 class="card-title">Visual Studio Code</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Development</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">A free, powerful code editor from Microsoft supporting multiple programming languages.</p>
+                <a href="https://code.visualstudio.com/" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=PowerToys" alt="PowerToys">
+            <div class="card-content">
+                <h3 class="card-title">PowerToys</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">A set of utilities for power users to tune and streamline their Windows experience.</p>
+                <a href="https://github.com/microsoft/PowerToys" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=OneNote" alt="OneNote">
+            <div class="card-content">
+                <h3 class="card-title">OneNote</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Productivity</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">A digital note-taking app for organizing your notes, ideas, and projects.</p>
+                <a href="https://www.onenote.com/" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=Microsoft+To+Do" alt="Microsoft To Do">
+            <div class="card-content">
+                <h3 class="card-title">Microsoft To Do</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Productivity</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">A task management app to help you stay organized and manage your daily tasks.</p>
+                <a href="https://todo.microsoft.com/" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 7 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=Sysinternals+Suite" alt="Sysinternals Suite">
+            <div class="card-content">
+                <h3 class="card-title">Sysinternals Suite</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">System</span>
+                    <span class="tag-pill">Free</span>
+                </div>
+                <p class="card-description">A collection of advanced system utilities for Windows troubleshooting and management.</p>
+                <a href="https://docs.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 8 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=PowerToys+FancyZones" alt="PowerToys FancyZones">
+            <div class="card-content">
+                <h3 class="card-title">FancyZones</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                    <span class="tag-pill">PowerToys</span>
+                </div>
+                <p class="card-description">A window manager that makes it easy to create complex window layouts and quickly position windows into those layouts.</p>
+                <a href="https://learn.microsoft.com/en-us/windows/powertoys/fancyzones" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 9 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=PowerRename" alt="PowerRename">
+            <div class="card-content">
+                <h3 class="card-title">PowerRename</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                    <span class="tag-pill">PowerToys</span>
+                </div>
+                <p class="card-description">A bulk renaming tool that makes it easy to rename multiple files quickly using search and replace or regular expressions.</p>
+                <a href="https://learn.microsoft.com/en-us/windows/powertoys/powerrename" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 10 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=PowerToys+Run" alt="PowerToys Run">
+            <div class="card-content">
+                <h3 class="card-title">PowerToys Run</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                    <span class="tag-pill">PowerToys</span>
+                </div>
+                <p class="card-description">A quick launcher that lets you search for applications, files, folders, and more with just a few keystrokes.</p>
+                <a href="https://learn.microsoft.com/en-us/windows/powertoys/powertoys-run" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 11 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=PowerToys+Keyboard+Manager" alt="PowerToys Keyboard Manager">
+            <div class="card-content">
+                <h3 class="card-title">Keyboard Manager</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                    <span class="tag-pill">PowerToys</span>
+                </div>
+                <p class="card-description">Remap keys and create your own keyboard shortcuts to enhance your productivity.</p>
+                <a href="https://learn.microsoft.com/en-us/windows/powertoys/keyboard-manager" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- Card 12 -->
+        <div class="card">
+            <img src="https://via.placeholder.com/300x150.png?text=PowerToys+Image+Resizer" alt="PowerToys Image Resizer">
+            <div class="card-content">
+                <h3 class="card-title">Image Resizer</h3>
+                <div class="tags-container">
+                    <span class="tag-pill">Utility</span>
+                    <span class="tag-pill">Free</span>
+                    <span class="tag-pill">PowerToys</span>
+                </div>
+                <p class="card-description">Quickly resize one or more images with built-in presets or custom dimensions directly from the File Explorer context menu.</p>
+                <a href="https://learn.microsoft.com/en-us/windows/powertoys/image-resizer" class="card-link" target="_blank" rel="noopener noreferrer">Learn More</a>
+            </div>
+        </div>
+
+        <!-- AdSense Ad Card Placeholder (Every 9th Item) -->
+        <div class="ad-card">
+            <!-- Replace the below div with your actual AdSense ad code -->
+            <p>Your Ad Here</p>
+        </div>
+
+        <!-- Continue adding up to 40 cards and 4 ad placeholders similarly -->
+    </div>
+
+    <!-- JavaScript for Search Functionality, Tag Filtering, and Tool Count -->
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const tagFilter = document.getElementById('tagFilter');
+        const filterIcon = document.getElementById('filterIcon');
+        const cardGrid = document.getElementById('cardGrid');
+        const cards = Array.from(cardGrid.getElementsByClassName('card'));
+        const toolCount = document.getElementById('toolCount');
+
+        // Initialize tool count
+        function updateToolCount() {
+            const visibleCards = cards.filter(card => card.style.display !== 'none');
+            toolCount.textContent = `Showing ${visibleCards.length} tool${visibleCards.length !== 1 ? 's' : ''}`;
+        }
+
+        // Initial count on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateToolCount();
+        });
+
+        // Toggle Filter Dropdown
+        filterIcon.addEventListener('click', () => {
+            const select = document.getElementById('tagFilter');
+            select.style.display = select.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Get selected tags
+        function getSelectedTags() {
+            return Array.from(tagFilter.selectedOptions).map(option => option.value.toLowerCase());
+        }
+
+        // Search and Filter Functionality
+        function filterCards() {
+            const filter = searchInput.value.toLowerCase();
+            const selectedTags = getSelectedTags();
+
+            cards.forEach(function(card) {
+                const title = card.querySelector('.card-title').textContent.toLowerCase();
+                const description = card.querySelector('.card-description').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.tag-pill')).map(tag => tag.textContent.toLowerCase());
+
+                const matchesSearch = title.includes(filter) || description.includes(filter) || tags.some(tag => tag.includes(filter));
+                const matchesTags = selectedTags.length === 0 || selectedTags.some(tag => tags.includes(tag));
+
+                if (matchesSearch && matchesTags) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Update the tool count after filtering
+            updateToolCount();
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', filterCards);
+        tagFilter.addEventListener('change', filterCards);
+
+        // Click outside to close the filter dropdown
+        document.addEventListener('click', function(event) {
+            if (!filterIcon.contains(event.target) && !tagFilter.contains(event.target)) {
+                tagFilter.style.display = 'none';
+            }
+        });
+    </script>
+
+</body>
+</html>
+
+--------------------------------------------------------------------------------
+

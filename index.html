@@ -3,253 +3,128 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Personal Portfolio</title>
-  
-  <!-- Google Fonts for Material Icons and Typography -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap" rel="stylesheet">
-  
+  <title>Robby Boney's Website</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          },
+          fontFamily: {
+            'typewriter': ['"Special Elite"', 'cursive'],
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    /* Reset default margins and paddings */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    /* Body and HTML styles */
-    body, html {
-      height: 100%;
-      font-family: 'Roboto', sans-serif;
-      overflow: hidden;
-    }
-
-    /* Canvas for gradient background */
-    #gradient-canvas {
+    /* Ensure the canvas covers the entire background */
+    #gameOfLifeCanvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
-      pointer-events: none; /* Ensure the canvas doesn't interfere with user interactions */
-    }
-
-    /* Header styles */
-    header {
-      position: fixed;
-      top: 0;
-      width: 100%;
-      /* Removed background-color to make header transparent */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 10px 0;
-      z-index: 1000; /* Higher than canvas */
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-
-    /* Logo styles */
-    .logo {
-      margin-bottom: 8px;
-    }
-
-    .logo img {
-      height: 50px;
-    }
-
-    /* Navigation styles */
-    nav {
-      width: 100%;
-    }
-
-    nav ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-    }
-
-    nav ul li {
-      margin: 0 15px;
-      position: relative;
-    }
-
-    nav ul li a {
-      text-decoration: none;
-      color: #333; /* Changed from white to dark grey */
-      font-weight: 500;
-      font-size: 18px;
-      padding: 8px 12px;
-      border-radius: 4px;
-      transition: background 0.3s, box-shadow 0.3s, transform 0.3s;
-      display: flex;
-      align-items: center;
-    }
-
-    nav ul li a:hover {
-      background-color: rgba(51, 51, 51, 0.1); /* Adjusted for dark grey background */
-      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-      transform: translateY(-2px);
-    }
-
-    /* Optional: Adding Material Icons */
-    nav ul li a .material-icons {
-      margin-right: 6px;
-      font-size: 20px;
-    }
-
-    /* Main content styles */
-    main {
-      margin-top: 100px; /* Height of the header */
-      height: calc(100% - 100px);
-      position: relative;
-      z-index: 1; /* Above the canvas */
-      overflow: hidden;
-    }
-
-    /* Text content styles */
-    .content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      top: 50%;
-      transform: translateY(-50%);
-      padding: 0 20px;
-    }
-
-    .content h1 {
-      font-size: 64px;
-      font-weight: 700;
-      color: #fff;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-    }
-
-    /* Responsive adjustments */
-    @media (max-width: 768px) {
-      .content h1 {
-        font-size: 48px;
-      }
-
-      nav ul li a {
-        font-size: 16px;
-        padding: 6px 10px;
-      }
-
-      .logo img {
-        height: 40px;
-      }
-
-      header {
-        padding: 8px 0;
-      }
-
-      main {
-        margin-top: 120px; /* Increased to accommodate stacked header */
-      }
-    }
-
-    @media (max-width: 480px) {
-      .content h1 {
-        font-size: 32px;
-      }
-
-      nav ul li {
-        margin: 0 10px;
-      }
+      z-index: -1; /* Place the canvas behind other content */
+      background-color: #ffffff; /* Match the body background */
     }
   </style>
 </head>
-<body>
+<body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
+  <!-- Canvas for Game of Life -->
+  <canvas id="gameOfLifeCanvas"></canvas>
 
-  <!-- Gradient Canvas -->
-  <canvas id="gradient-canvas"></canvas>
+  <div class="container mx-auto p-4 z-10 relative">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- About Card -->
+      <a href="./about.html" class="block">
+        <div class="bg-white border-4 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-56">
+          <span class="text-5xl font-semibold">ABOUT</span>
+        </div>
+      </a>  
+      
+      <!-- Projects Card -->
+      <a href="./projects.html" class="block">
+        <div class="bg-white border-4 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-56">
+          <span class="text-5xl font-semibold">PROJECTS</span>
+        </div>
+      </a>
 
-  <!-- Header -->
-  <header>
-    <div class="logo">
-      <!-- Replace with your logo image -->
-      <img src="logo.png" alt="Logo">
+      <!-- Blog Card -->
+      <a href="./blog.html" class="block">
+        <div class="bg-white border-4 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-56">
+          <span class="text-5xl font-semibold">WRITING</span>
+        </div>
+      </a>
+      
+      
+      <!-- GitHub Card -->
+      <a href="https://github.com/HarmonicHemispheres" target="_blank" class="block">
+        <div class="bg-white border-4 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-56">
+          <!-- Enlarged GitHub Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-gray-800" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 .297c-6.63 0-12 5.373-12 12 
+            0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 
+            0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 
+            17.07 3.633 16.7 3.633 16.7c-1.087-.744.084-.729.084-.729 
+            1.205.084 1.838 1.236 1.838 1.236 
+            1.07 1.835 2.809 1.305 3.495.998 
+            .108-.776.42-1.305.762-1.605-2.665-.3-5.467-1.332-5.467-5.93 
+            0-1.31.468-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 
+            0 0 1.005-.322 3.3 1.23a11.52 11.52 0 013.003-.404 
+            c1.02.005 2.045.138 3.003.404 
+            2.28-1.552 3.285-1.23 3.285-1.23 
+            .645 1.653.24 2.873.12 3.176 
+            .765.84 1.23 1.91 1.23 3.22 
+            0 4.61-2.805 5.625-5.475 5.92 
+            .435.372.81 1.102.81 2.222 
+            0 1.606-.015 2.896-.015 3.286 
+            0 .315.21.694.825.576C20.565 22.092 
+            24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+          </svg>
+        </div>
+      </a>
+      
+      
+      <!-- SoundCloud Card -->
+      <a href="https://soundcloud.com/raenborn" target="_blank" class="block">
+        <div class="bg-white border-4 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-56">
+          <!-- SoundCloud Logo Image with Rounded Edges -->
+          <img src="./assets/images/soundcloud.jpg" alt="SoundCloud Logo" class="h-24 w-24 object-contain rounded-lg">
+        </div>
+      </a>
+      
+      <!-- LinkedIn Card -->
+      <a href="https://www.linkedin.com/in/robby-boney-717486133/" target="_blank" class="block">
+        <div class="bg-white border-4 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex items-center justify-center w-full h-56">
+          <!-- Enlarged LinkedIn Icon -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-blue-700" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M19 0h-14c-2.761 0-5 2.239-5 
+            5v14c0 2.761 2.239 5 5 5h14c2.761 
+            0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 
+            19h-3v-10h3v10zm-1.5-11.268c-.966 
+            0-1.75-.784-1.75-1.75s.784-1.75 
+            1.75-1.75 1.75.784 
+            1.75 1.75-.784 1.75-1.75 
+            1.75zm13.5 11.268h-3v-5.604c0-1.337-.026-3.065-1.87-3.065-1.872 
+            0-2.158 1.459-2.158 
+            2.967v5.7h-3v-10h2.881v1.367h.041c.401-.761 
+            1.381-1.561 2.841-1.561 3.041 
+            0 3.603 2.0 3.603 4.605v5.592z"/>
+          </svg>
+        </div>
+      </a>
+      
     </div>
-    <nav>
-      <ul>
-        <li><a href="#about"><i class="material-icons">person</i> About</a></li>
-        <li><a href="#projects"><i class="material-icons">work</i> Projects</a></li>
-        <li><a href="#blog"><i class="material-icons">article</i> Blog</a></li>
-        <li><a href="#contact"><i class="material-icons">contact_mail</i> Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+  </div>
 
-  <!-- Main Content -->
-  <main>
-    <div class="content">
-      <h1>build a better world</h1>
-    </div>
-  </main>
-
-  <script>
-    // JavaScript for the smooth, slowly morphing gradient background
-
-    const canvas = document.getElementById('gradient-canvas');
-    const ctx = canvas.getContext('2d');
-
-    let width, height;
-
-    function resizeCanvas() {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    }
-
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    // Gradient parameters
-    let hue = 0; // Starting hue
-    const hueSpeed = 0.05; // Slower hue change for smoother transitions
-    let angle = 0; // Starting angle for gradient center movement
-    const angleSpeed = 0.0002; // Slower angle change for gentle motion
-
-    function draw() {
-      // Clear the canvas
-      ctx.clearRect(0, 0, width, height);
-
-      // Update hue
-      hue += hueSpeed;
-      if (hue >= 360) hue -= 360;
-
-      // Update angle for gradient center movement
-      angle += angleSpeed;
-      if (angle >= 2 * Math.PI) angle -= 2 * Math.PI;
-
-      // Calculate gradient center position (slow circular motion)
-      const radius = Math.min(width, height) / 6; // Smaller radius for subtle movement
-      const centerX = width / 2 + radius * Math.cos(angle);
-      const centerY = height / 2 + radius * Math.sin(angle);
-
-      // Create radial gradient
-      const gradient = ctx.createRadialGradient(
-        centerX, centerY, width / 20, // Inner circle with smaller radius
-        centerX, centerY, Math.max(width, height) / 1.5 // Outer circle
-      );
-
-      // Define gradient color stops with smooth hue transitions
-      gradient.addColorStop(0, `hsla(${hue}, 70%, 80%, 0.2)`);
-      gradient.addColorStop(0.5, `hsla(${(hue + 60) % 360}, 70%, 80%, 0.2)`);
-      gradient.addColorStop(1, `hsla(${(hue + 120) % 360}, 70%, 80%, 0.2)`);
-
-      // Apply the gradient
-      ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
-
-      // Request the next frame
-      requestAnimationFrame(draw);
-    }
-
-    // Start the animation
-    draw();
-  </script>
-
+  <!-- Import Game of Life Script -->
+  <script src="gol.js"></script>
 </body>
 </html>

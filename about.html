@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About - Robby Boney</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts for Typewriter Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          },
+          fontFamily: {
+            'typewriter': ['"Special Elite"', 'cursive'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ensure the canvas covers the entire background */
+    #gameOfLifeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Place the canvas behind other content */
+      background-color: #ffffff; /* Match the body background */
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
+  <!-- Canvas for Game of Life -->
+  <canvas id="gameOfLifeCanvas"></canvas>
+
+  <!-- Content Card -->
+  <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto z-10 relative font-typewriter">
+    <h1 class="text-3xl font-bold mb-6">About Me</h1>
+    <p class="mb-4">
+      Greetings from a bundle of distant atoms, I'm Robby. I'm not that smart, but very ambitious.
+    </p>
+    <p class="mb-4">
+      I seek the creative beauty and utopian future technology can bring us.
+    </p>
+    <p class="mb-4">
+      I've spent time composing music in Hollywood, researching regenerative medical solutions for hearing loss 
+      <a href="https://labs.wsu.edu/allison-coffin/lab-members/" target="_blank" class="text-blue-500 underline">here</a>, 
+      directing software engineering teams for enterprise data solutions 
+      <a href="https://www.linkedin.com/in/robby-boney-717486133/" target="_blank" class="text-blue-500 underline">here</a>, 
+      and am currently working on a synthetic data product to make data cleaning and editing easier for small teams and firms.
+    </p>
+  </div>
+
+  <!-- Import Game of Life Script -->
+  <script src="gol.js"></script>
+</body>
+</html>

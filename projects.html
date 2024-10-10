@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Projects - Robby Boney's Website</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Optional: Customize Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            charcoal: '#2D2D2D',
+            // Add any other custom colors if needed
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Ensure the canvas covers the entire background */
+    #gameOfLifeCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1; /* Place the canvas behind other content */
+      background-color: #ffffff; /* Match the body background */
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800 min-h-screen flex items-center justify-center relative">
+  <!-- Canvas for Game of Life -->
+  <canvas id="gameOfLifeCanvas"></canvas>
+
+  <div class="container mx-auto p-4 z-10 relative">
+    <h1 class="text-4xl font-semibold mb-8 text-center">PROJECTS</h1>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      
+      <!-- AI Built Games Project Card -->
+      <a href="https://harmonichemispheres.github.io/AI-Built-Games/index.html" target="_blank" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center h-64">
+          <!-- Optional: Add an icon or image representing the project -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-indigo-600" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Example Icon: Game Controller -->
+            <path d="M17 10h-1V9a4 4 0 10-8 0v1H7a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2zm-8-1a2 2 0 114 0v1h-4V9zm6 8H7v-4h10v4z"/>
+          </svg>
+          <span class="text-2xl font-semibold mb-2">AI Built Games</span>
+          <p class="text-center text-gray-600">Explore games developed with AI technologies.</p>
+        </div>
+      </a>
+      
+      <!-- Magic Pill Labs Project Card -->
+      <a href="https://magicpilllabs.com/" target="_blank" class="block">
+        <div class="bg-white border-2 border-gray-300 rounded-lg shadow hover:shadow-lg transition duration-300 p-6 flex flex-col items-center justify-center h-64">
+          <!-- Optional: Add an icon or image representing the project -->
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 text-green-600" fill="currentColor" viewBox="0 0 24 24">
+            <!-- Example Icon: Lab Flask -->
+            <path d="M17 2H7v2h10V2zm1 4H6l-1 14a2 2 0 002 2h12a2 2 0 002-2L18 6zm-3 12H9v-2h6v2zm0-4H9v-2h6v2zm0-4H9V8h6v2z"/>
+          </svg>
+          <span class="text-2xl font-semibold mb-2">Magic Pill Labs</span>
+          <p class="text-center text-gray-600">Innovative solutions and projects at Magic Pill Labs.</p>
+        </div>
+      </a>
+      
+    </div>
+  </div>
+
+  <!-- Import Game of Life Script -->
+  <script src="gol.js"></script>
+</body>
+</html>
