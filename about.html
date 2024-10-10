@@ -6,8 +6,6 @@
   <title>About - Robby Boney</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Google Fonts for Typewriter Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&display=swap" rel="stylesheet">
   <!-- Optional: Customize Tailwind Configuration -->
   <script>
     tailwind.config = {
@@ -17,9 +15,7 @@
             charcoal: '#2D2D2D',
             // Add any other custom colors if needed
           },
-          fontFamily: {
-            'typewriter': ['"Special Elite"', 'cursive'],
-          }
+          // Removed fontFamily extension for 'typewriter'
         }
       }
     }
@@ -42,7 +38,7 @@
   <canvas id="gameOfLifeCanvas"></canvas>
 
   <!-- Content Card -->
-  <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto z-10 relative font-typewriter">
+  <div class="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto z-10 relative">
     <h1 class="text-3xl font-bold mb-6">About Me</h1>
     <p class="mb-4">
       Greetings from a bundle of distant atoms, I'm Robby. I'm not that smart, but very ambitious.
