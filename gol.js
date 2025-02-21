@@ -124,6 +124,28 @@ window.addEventListener('resize', () => {
   initializeCanvas();
 });
 
+// Handle canvas click
+canvas.addEventListener('click', handleClick);
+
+function handleClick(event) {
+  const x = Math.floor(event.offsetX / cellSize);
+  const y = Math.floor(event.offsetY / cellSize);
+  const p = 0.2; // Probability to set a cell to alive
+
+  // Define a 5x5 area around the clicked cell
+  for (let i = -2; i <= 2; i++) {
+    for (let j = -2; j <= 2; j++) {
+      const col = (x + i + cols) % cols; // Wrap around edges
+      const row = (y + j + rows) % rows; // Wrap around edges
+      if (Math.random() < p) {
+        currentGrid[col][row] = 1; // Set cell to alive with 20% probability
+      }
+    }
+  }
+
+  drawGrid(); // Immediately redraw to show the new live cells
+}
+
 // Initialize and start animation
 initializeCanvas();
 requestAnimationFrame(animate);
