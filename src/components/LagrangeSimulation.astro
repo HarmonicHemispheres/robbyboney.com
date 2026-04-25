@@ -61,8 +61,11 @@
     let phaseWidth = 0;
     let phaseHeight = 0;
     let devicePixelRatio = 1;
-    let visible = true;
+    let inViewport = true;
+    let pageVisible = document.visibilityState !== 'hidden';
     let frameHandle = 0;
+    let lastPhysicsTime = 0;
+    let lastDrawTime = 0;
 
     const mass1 = 1;
     const mass2 = 1;
@@ -74,16 +77,38 @@
     let omega2 = 0;
 
     const trace: Array<[number, number]> = [];
-    const phaseTrace: Array<[number, number]> = [];
+    let previousPhasePoint: [number, number] | null = null;
     const maxTracePoints = 140;
-    const maxPhasePoints = 420;
+    const maxCatchUpSteps = 3;
+    const physicsIntervalMs = 1000 / 60;
+    const drawIntervalMs = 1000 / 30;
+    const stepSize = 0.035;
+
+    function isActive() {
+      return inViewport && pageVisible;
+    }
+
+    function stopFrame() {
+      if (frameHandle !== 0) {
+        cancelAnimationFrame(frameHandle);
+        frameHandle = 0;
+      }
+      lastPhysicsTime = 0;
+      lastDrawTime = 0;
+    }
+
+    function queueFrame() {
+      if (frameHandle === 0 && isActive()) {
+        frameHandle = requestAnimationFrame(frame);
+      }
+    }
 
     function resize() {
       const pendulumRect = pendulumCanvas.getBoundingClientRect();
       const phaseRect = phaseCanvas.getBoundingClientRect();
       if (!pendulumRect.width || !pendulumRect.height || !phaseRect.width || !phaseRect.height) return;
 
-      devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+      devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
 
       pendulumCanvas.width = Math.round(pendulumRect.width * devicePixelRatio);
       pendulumCanvas.height = Math.round(pendulumRect.height * devicePixelRatio);
@@ -219,8 +244,7 @@
     function drawPhase() {
       const omegaMax = 4.5;
       const wrappedTheta2 = wrapAngle(theta2);
-      phaseTrace.push([wrappedTheta2, omega2]);
-      if (phaseTrace.length > maxPhasePoints) phaseTrace.shift();
+      const currentPoint: [number, number] = [wrappedTheta2, omega2];
 
       phaseContext.fillStyle = 'rgba(255, 245, 235, 0.12)';
       phaseContext.fillRect(0, 0, phaseWidth, phaseHeight);
@@ -234,16 +258,20 @@
       phaseContext.lineTo(phaseWidth / 2, phaseHeight);
       phaseContext.stroke();
 
-      if (phaseTrace.length < 2) return;
+      if (!previousPhasePoint) {
+        previousPhasePoint = currentPoint;
+        return;
+      }
 
-      const last = phaseTrace[phaseTrace.length - 1];
-      const previous = phaseTrace[phaseTrace.length - 2];
-      if (Math.abs(last[0] - previous[0]) >= Math.PI) return;
+      if (Math.abs(currentPoint[0] - previousPhasePoint[0]) >= Math.PI) {
+        previousPhasePoint = currentPoint;
+        return;
+      }
 
-      const x1 = ((previous[0] + Math.PI) / (2 * Math.PI)) * (phaseWidth - 12) + 6;
-      const y1 = phaseHeight - (((previous[1] + omegaMax) / (2 * omegaMax)) * (phaseHeight - 12) + 6);
-      const x2 = ((last[0] + Math.PI) / (2 * Math.PI)) * (phaseWidth - 12) + 6;
-      const y2 = phaseHeight - (((last[1] + omegaMax) / (2 * omegaMax)) * (phaseHeight - 12) + 6);
+      const x1 = ((previousPhasePoint[0] + Math.PI) / (2 * Math.PI)) * (phaseWidth - 12) + 6;
+      const y1 = phaseHeight - (((previousPhasePoint[1] + omegaMax) / (2 * omegaMax)) * (phaseHeight - 12) + 6);
+      const x2 = ((currentPoint[0] + Math.PI) / (2 * Math.PI)) * (phaseWidth - 12) + 6;
+      const y2 = phaseHeight - (((currentPoint[1] + omegaMax) / (2 * omegaMax)) * (phaseHeight - 12) + 6);
 
       phaseContext.strokeStyle = 'rgba(220, 70, 90, 0.74)';
       phaseContext.lineWidth = 0.9;
@@ -257,29 +285,45 @@
       phaseContext.beginPath();
       phaseContext.arc(x2, y2, 1.45, 0, Math.PI * 2);
       phaseContext.fill();
+
+      previousPhasePoint = currentPoint;
     }
 
-    function frame() {
-      if (!visible) {
-        frameHandle = 0;
+    function frame(timestamp: number) {
+      frameHandle = 0;
+      if (!isActive()) {
         return;
       }
 
       if (!pendulumWidth || !phaseWidth) resize();
       if (!pendulumWidth || !phaseWidth) {
-        frameHandle = requestAnimationFrame(frame);
+        queueFrame();
         return;
       }
 
-      const stepSize = 0.035;
-      for (let step = 0; step < 2; step++) {
-        [theta1, theta2, omega1, omega2] = rk4([theta1, theta2, omega1, omega2], stepSize);
+      if (lastPhysicsTime === 0) {
+        lastPhysicsTime = timestamp;
+        lastDrawTime = timestamp;
+        drawPendulum();
+        drawPhase();
+        queueFrame();
+        return;
       }
 
-      drawPendulum();
-      drawPhase();
+      let physicsSteps = 0;
+      while (timestamp - lastPhysicsTime >= physicsIntervalMs && physicsSteps < maxCatchUpSteps) {
+        [theta1, theta2, omega1, omega2] = rk4([theta1, theta2, omega1, omega2], stepSize);
+        lastPhysicsTime += physicsIntervalMs;
+        physicsSteps += 1;
+      }
 
-      frameHandle = requestAnimationFrame(frame);
+      if (physicsSteps > 0 && timestamp - lastDrawTime >= drawIntervalMs) {
+        drawPendulum();
+        drawPhase();
+        lastDrawTime = timestamp;
+      }
+
+      queueFrame();
     }
 
     const resizeObserver = new ResizeObserver(resize);
@@ -287,15 +331,28 @@
     resizeObserver.observe(phaseCanvas);
 
     const intersectionObserver = new IntersectionObserver((entries) => {
-      visible = entries.some((entry) => entry.isIntersecting);
-      if (visible && frameHandle === 0) {
-        frameHandle = requestAnimationFrame(frame);
+      inViewport = entries.some((entry) => entry.isIntersecting);
+      if (isActive()) {
+        queueFrame();
+      } else {
+        stopFrame();
       }
     });
     intersectionObserver.observe(root);
 
+    function handleVisibilityChange() {
+      pageVisible = document.visibilityState !== 'hidden';
+      if (isActive()) {
+        queueFrame();
+      } else {
+        stopFrame();
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     resize();
-    frameHandle = requestAnimationFrame(frame);
+    queueFrame();
   }
 
   document.querySelectorAll<HTMLElement>('[data-lagrange-sim]').forEach(startLagrangeSimulation);
