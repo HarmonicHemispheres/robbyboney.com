@@ -1,0 +1,674 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+
+type TimelineEntry = {
+  period: string;
+  start: number;
+  end?: number;
+  current?: boolean;
+  role: string;
+  org: string;
+  mode: string;
+  location: string;
+  summary: string;
+  tags: string[];
+  accent: string;
+};
+
+const currentYear = new Date().getFullYear();
+
+const timeline: TimelineEntry[] = [
+  {
+    period: '2025 - Present',
+    start: 2025,
+    end: currentYear,
+    current: true,
+    role: 'Founder & CEO',
+    org: 'MagicPill Labs',
+    mode: 'Self-employed · Remote',
+    location: 'Ridgefield, Washington',
+    summary: 'Building agentic AI systems and practical tooling for the messy middle of real work.',
+    tags: ['Agentic AI', 'Product Strategy', 'Systems Design'],
+    accent: 'var(--aurora-6)',
+  },
+  {
+    period: '2021 - 2026',
+    start: 2021,
+    end: 2026,
+    role: 'Director of Product Development',
+    org: 'INTERJECT',
+    mode: 'Full-time · Remote',
+    location: 'Vancouver, Washington',
+    summary: 'Led enterprise product delivery, client account management, and early AI copilot work across industrial software programs.',
+    tags: ['Product Leadership', 'Client Delivery', 'AI Copilots'],
+    accent: 'var(--aurora-1)',
+  },
+  {
+    period: '2019 - 2021',
+    start: 2019,
+    end: 2021,
+    role: 'Software Engineer',
+    org: 'INTERJECT',
+    mode: 'Full-time',
+    location: 'Vancouver, Washington',
+    summary: 'Worked across backend architecture, CI/CD, Git workflows, Python packaging, and product management.',
+    tags: ['Backend', 'CI/CD', 'Python'],
+    accent: 'var(--aurora-3)',
+  },
+  {
+    period: '2019 - 2021',
+    start: 2019,
+    end: 2021,
+    role: 'Founder & CEO',
+    org: 'Meridian Sky Inc.',
+    mode: 'Self-employed',
+    location: 'Vancouver, Washington',
+    summary: 'Directed deep learning algorithm design, product development, business operations, and team leadership.',
+    tags: ['Deep Learning', 'Operations', 'Leadership'],
+    accent: 'var(--aurora-4)',
+  },
+  {
+    period: '2018 - 2019',
+    start: 2018,
+    end: 2019,
+    role: 'Student Developer',
+    org: 'INTERJECT',
+    mode: 'Internship',
+    location: 'Vancouver, Washington',
+    summary: 'Started in data analysis and Python-heavy product work, which became the base layer for later engineering leadership.',
+    tags: ['Internship', 'Data Analysis', 'Python'],
+    accent: 'var(--aurora-2)',
+  },
+  {
+    period: '2017 - 2022',
+    start: 2017,
+    end: 2022,
+    role: 'Music Producer',
+    org: 'EXPLOR',
+    mode: 'Self-employed',
+    location: 'Vancouver, Washington',
+    summary: 'Composed, mixed, mastered, published, and performed original music while shaping the visual identity around the project.',
+    tags: ['Composition', 'Ableton Live', 'Art Direction'],
+    accent: 'var(--aurora-5)',
+  },
+  {
+    period: '2014 - 2018',
+    start: 2014,
+    end: 2018,
+    role: 'Undergraduate Researcher',
+    org: 'WSUV · Coffin Lab',
+    mode: 'Part-time',
+    location: 'Portland Metro Area',
+    summary: 'Performed bioinformatics and auditory regeneration research, including work connected to ototoxicity and hearing-loss studies.',
+    tags: ['Research', 'Bioinformatics', 'Auditory Regeneration'],
+    accent: 'var(--aurora-6)',
+  },
+];
+
+const timelineEndYear = Math.max(...timeline.map((item) => (item.current ? currentYear : item.end ?? item.start)));
+const timelineStartYear = Math.min(...timeline.map((item) => item.start));
+const timelineYears = Array.from(
+  { length: timelineEndYear - timelineStartYear + 1 },
+  (_, index) => timelineEndYear - index,
+);
+
+const sortedTimeline = [...timeline].sort((a, b) => {
+  const aEnd = a.current ? currentYear : a.end ?? a.start;
+  const bEnd = b.current ? currentYear : b.end ?? b.start;
+  return bEnd - aEnd || b.start - a.start || a.role.localeCompare(b.role);
+});
+
+const laneStarts: number[] = [];
+
+const plottedTimeline = sortedTimeline.map((item, index) => {
+  const displayEnd = item.current ? currentYear : item.end ?? item.start;
+  let lane = laneStarts.findIndex((laneStart) => displayEnd < laneStart);
+
+  if (lane === -1) {
+    lane = laneStarts.length;
+    laneStarts.push(item.start);
+  } else {
+    laneStarts[lane] = item.start;
+  }
+
+  return {
+    ...item,
+    displayEnd,
+    spanYears: displayEnd - item.start + 1,
+    topRow: timelineEndYear - displayEnd + 1,
+    lane,
+    zIndex: sortedTimeline.length - index,
+  };
+});
+
+const timelineLaneCount = Math.max(...plottedTimeline.map((item) => item.lane)) + 1;
+const activityByYear = timelineYears.map((year) => ({
+  year,
+  count: timeline.filter((item) => item.start <= year && (item.current ? currentYear : item.end ?? item.start) >= year).length,
+}));
+const peakOverlap = Math.max(...activityByYear.map((item) => item.count));
+const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
+---
+
+<BaseLayout title="About — Robby Boney" description="A bundle of distant atoms, currently ambitious.">
+  <div class="page about-page">
+    <article class="card about-hero reveal r1">
+      <div class="tag"><span class="pip"></span>About</div>
+      <div class="about-copy">
+        <div class="about-kicker">Technologist · AI Expert · Economics Enthusiast · Futurist · Builder</div>
+        <h1>Building systems where software, research, and real work collide.</h1>
+        <div class="about-prose">
+          <p>
+            I'm Robby Boney, a founder and product-minded engineer working out of Ridgefield, Washington.
+            My path has moved through research labs, enterprise delivery, music production, and now agentic AI.
+          </p>
+          <p>
+            I care most about useful intelligence: tools that actually help teams operate, decide, and build.
+            That usually means joining product sense, systems thinking, and a willingness to work in messy domains
+            where the abstractions are not finished yet.
+          </p>
+          <p>
+            Today I'm building at <a href="https://magicpilllabs.com" target="_blank" rel="noopener">MagicPill Labs</a>.
+            The through-line underneath everything else is the same one: make complex things usable without making
+            them shallow.
+          </p>
+        </div>
+      </div>
+      <div class="about-portrait-shell">
+        <img
+          class="about-portrait"
+          src="/assets/images/robby-portrait.svg"
+          alt="Portrait placeholder for Robby Boney"
+          loading="eager"
+        />
+      </div>
+    </article>
+
+    <section class="card timeline-card reveal r2" aria-labelledby="timeline-heading">
+      <div class="tag"><span class="pip" style="background:var(--aurora-3)"></span>Experience</div>
+      <div class="timeline-head">
+        <p class="timeline-kicker">Overlap-aware timeline</p>
+        <h2 id="timeline-heading">Concurrent roles now sit where they actually overlapped in time.</h2>
+      </div>
+      <div class="timeline-readouts" aria-label="Experience timeline summary">
+        <div class="timeline-ro">
+          <span class="timeline-ro-label">Span</span>
+          <span class="timeline-ro-value">{timelineStartYear} - {timelineEndYear}</span>
+        </div>
+        <div class="timeline-ro">
+          <span class="timeline-ro-label">Peak overlap</span>
+          <span class="timeline-ro-value">{peakOverlap} roles</span>
+        </div>
+        <div class="timeline-ro">
+          <span class="timeline-ro-label">Concurrent years</span>
+          <span class="timeline-ro-value">{concurrentYears}</span>
+        </div>
+        <div class="timeline-ro">
+          <span class="timeline-ro-label">Tracked positions</span>
+          <span class="timeline-ro-value">{timeline.length}</span>
+        </div>
+      </div>
+      <div class="timeline-shell" style={`--timeline-rows:${timelineYears.length};--timeline-lanes:${timelineLaneCount};`}>
+        <div class="timeline-years" aria-hidden="true">
+          {timelineYears.map((year) => <div class="timeline-year">{year}</div>)}
+        </div>
+
+        <div class="timeline-plot">
+          <div class="timeline-rules" aria-hidden="true">
+            {timelineYears.map(() => <div class="timeline-rule"></div>)}
+          </div>
+
+          <div class="timeline-cards">
+            {plottedTimeline.map((item) => (
+              <article
+                class="timeline-item"
+                style={`grid-row:${item.topRow} / span ${item.spanYears};--lane:${item.lane};--accent:${item.accent};z-index:${item.zIndex};`}
+              >
+                <div class="timeline-point" aria-hidden="true"></div>
+                <div class="timeline-body">
+                  <div class="timeline-period">{item.period}</div>
+                  <div class="timeline-meta">{item.org} · {item.mode}</div>
+                  <h3>{item.role}</h3>
+                  <p class="timeline-location">{item.location}</p>
+                  <p class="timeline-summary">{item.summary}</p>
+                  <div class="timeline-tags">
+                    {item.tags.map((tag) => <span>{tag}</span>)}
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page {
+    max-width: 1120px;
+  }
+
+  .about-hero,
+  .timeline-card {
+    cursor: default;
+  }
+
+  .about-hero:hover,
+  .timeline-card:hover {
+    transform: none;
+  }
+
+  .about-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(280px, 0.8fr);
+    gap: 28px;
+    align-items: center;
+    padding: 58px 56px 52px;
+    background:
+      radial-gradient(circle at 85% 18%, rgba(201, 53, 111, 0.18) 0%, transparent 36%),
+      linear-gradient(145deg, rgba(255, 212, 163, 0.22) 0%, transparent 48%),
+      rgba(253, 250, 245, 0.76);
+  }
+
+  .about-copy,
+  .about-portrait-shell {
+    position: relative;
+    z-index: 2;
+  }
+
+  .about-kicker,
+  .timeline-kicker,
+  .timeline-period,
+  .timeline-meta,
+  .timeline-location,
+  .timeline-tags span {
+    font-family: var(--mono);
+    text-transform: uppercase;
+  }
+
+  .about-kicker {
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-mute);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  .about-hero h1 {
+    font-family: var(--display);
+    font-size: clamp(38px, 5vw, 68px);
+    font-weight: 350;
+    line-height: 0.98;
+    letter-spacing: -0.04em;
+    max-width: 10ch;
+  }
+
+  .about-prose {
+    margin-top: 24px;
+    max-width: 62ch;
+    display: grid;
+    gap: 16px;
+    color: var(--ink-soft);
+    font-size: 18px;
+    line-height: 1.72;
+  }
+
+  .about-prose a {
+    color: var(--aurora-6);
+    text-decoration-color: rgba(201, 53, 111, 0.35);
+    text-underline-offset: 0.18em;
+  }
+
+  .about-portrait-shell {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .about-portrait {
+    width: min(100%, 360px);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 1px solid rgba(26, 20, 16, 0.08);
+    background: rgba(253, 250, 245, 0.55);
+    box-shadow: 0 30px 70px -32px rgba(180, 80, 40, 0.45);
+  }
+
+  .timeline-card {
+    margin-top: 18px;
+    padding: 54px 56px 48px;
+    background:
+      radial-gradient(120% 90% at 78% -10%, rgba(252, 217, 192, 0.78) 0%, transparent 55%),
+      radial-gradient(80% 100% at 8% 110%, rgba(247, 185, 194, 0.55) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(253, 235, 208, 0.9) 0%, rgba(250, 215, 208, 0.82) 60%, rgba(245, 194, 204, 0.7) 100%);
+    box-shadow: 0 1px 1px rgba(60, 30, 30, 0.04), 0 24px 56px -18px rgba(217, 90, 100, 0.18);
+    isolation: isolate;
+  }
+
+  .timeline-head {
+    position: relative;
+    z-index: 2;
+    margin-bottom: 18px;
+    max-width: 52ch;
+  }
+
+  .timeline-kicker {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: var(--ink-mute);
+    margin-bottom: 10px;
+  }
+
+  .timeline-head h2 {
+    font-family: var(--display);
+    font-size: clamp(30px, 4vw, 46px);
+    font-weight: 360;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+
+  .timeline-readouts {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin: 0 0 22px;
+    padding: 0 4px;
+  }
+
+  .timeline-ro {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 112px;
+  }
+
+  .timeline-ro-label {
+    font-family: var(--mono);
+    font-size: 8.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(122, 44, 61, 0.58);
+  }
+
+  .timeline-ro-value {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: #4a1a26;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timeline-shell {
+    display: grid;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 26px;
+    align-items: start;
+  }
+
+  .timeline-years,
+  .timeline-rules,
+  .timeline-cards {
+    display: grid;
+    grid-template-rows: repeat(var(--timeline-rows), minmax(84px, auto));
+  }
+
+  .timeline-years {
+    position: relative;
+    z-index: 1;
+  }
+
+  .timeline-year {
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+    padding-top: 18px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+
+  .timeline-plot {
+    position: relative;
+    padding-left: 34px;
+    --lane-step: 54px;
+  }
+
+  .timeline-rules {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .timeline-rule {
+    position: relative;
+    border-top: 1px solid rgba(26, 20, 16, 0.08);
+  }
+
+  .timeline-rule::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: -5px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 53, 111, 0.18);
+    background: rgba(253, 250, 245, 0.96);
+    box-shadow: 0 8px 18px -16px rgba(201, 53, 111, 0.6);
+  }
+
+  .timeline-rule:first-child {
+    border-top: none;
+  }
+
+  .timeline-cards {
+    position: relative;
+  }
+
+  .timeline-item {
+    position: relative;
+    display: flex;
+    align-self: stretch;
+    width: calc(100% - ((var(--timeline-lanes) - 1) * var(--lane-step)));
+    margin-left: calc(var(--lane) * var(--lane-step));
+    padding: 12px 0 14px;
+  }
+
+  .timeline-point {
+    position: absolute;
+    left: -41px;
+    top: 30px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 3px solid rgba(253, 250, 245, 0.96);
+    box-shadow: 0 0 0 1px rgba(168, 58, 81, 0.08), 0 10px 24px -14px color-mix(in srgb, var(--accent) 70%, transparent);
+  }
+
+  .timeline-body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 100%;
+    padding: 18px 20px 18px;
+    border: 0.5px solid rgba(168, 58, 81, 0.18);
+    border-radius: 24px;
+    background:
+      radial-gradient(110% 82% at 82% -8%, color-mix(in srgb, var(--accent) 18%, #fcd9c0) 0%, transparent 58%),
+      radial-gradient(92% 100% at 0% 112%, rgba(247, 185, 194, 0.26) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(253, 235, 208, 0.82) 0%, rgba(250, 215, 208, 0.68) 62%, rgba(255, 250, 245, 0.76) 100%);
+    box-shadow: 0 1px 1px rgba(60, 30, 30, 0.04), 0 24px 56px -18px rgba(217, 90, 100, 0.16);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    overflow: hidden;
+  }
+
+  .timeline-body::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.34);
+    pointer-events: none;
+  }
+
+  .timeline-body::after {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--accent), transparent 78%);
+  }
+
+  .timeline-period {
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    color: color-mix(in srgb, var(--accent) 82%, #7a2c3d);
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 0.5px solid rgba(168, 58, 81, 0.14);
+    background: rgba(255, 255, 255, 0.42);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    width: fit-content;
+    margin-bottom: 14px;
+  }
+
+  .timeline-meta {
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    color: var(--ink-mute);
+    margin-bottom: 10px;
+  }
+
+  .timeline-body h3 {
+    font-family: var(--display);
+    font-size: clamp(24px, 2.6vw, 34px);
+    font-weight: 380;
+    line-height: 1;
+    letter-spacing: -0.025em;
+  }
+
+  .timeline-location {
+    margin-top: 10px;
+    color: var(--ink-mute);
+    font-size: 14px;
+  }
+
+  .timeline-summary {
+    margin-top: 12px;
+    color: var(--ink-soft);
+    line-height: 1.72;
+    max-width: 30ch;
+  }
+
+  .timeline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+  }
+
+  .timeline-tags span {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: #6e3845;
+    padding: 7px 11px;
+    border-radius: 999px;
+    border: 0.5px solid rgba(168, 58, 81, 0.14);
+    background: rgba(255, 255, 255, 0.34);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  @media (max-width: 900px) {
+    .about-hero {
+      grid-template-columns: 1fr;
+      padding: 54px 34px 34px;
+    }
+
+    .about-hero h1 {
+      max-width: none;
+    }
+
+    .about-portrait-shell {
+      justify-content: flex-start;
+    }
+
+    .about-portrait {
+      width: min(100%, 320px);
+    }
+
+    .timeline-card {
+      padding: 50px 34px 34px;
+    }
+
+    .timeline-readouts {
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .timeline-shell {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+
+    .timeline-years {
+      display: none;
+    }
+
+    .timeline-plot {
+      overflow-x: auto;
+      padding-left: 28px;
+      padding-bottom: 6px;
+      --lane-step: 42px;
+    }
+
+    .timeline-rules,
+    .timeline-cards {
+      min-width: 620px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .about-page {
+      padding-inline: 18px;
+    }
+
+    .about-hero,
+    .timeline-card {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+
+    .about-prose {
+      font-size: 17px;
+    }
+
+    .timeline-rules,
+    .timeline-cards {
+      min-width: 560px;
+    }
+
+    .timeline-readouts {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 16px;
+    }
+
+    .timeline-body {
+      padding: 18px;
+    }
+  }
+</style>

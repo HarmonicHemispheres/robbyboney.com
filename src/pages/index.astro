@@ -1,0 +1,1281 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import GameOfLife from '../components/GameOfLife.astro';
+import LagrangeSimulation from '../components/LagrangeSimulation.astro';
+
+// Bento content model — edit these to update the home page without touching markup.
+const identity = {
+  location: 'Ridgefield, WA · 2026',
+  first: 'Robby',
+  last: 'Boney',
+  stamps: [
+    'Founder · MagicPill Labs',
+    'Technologist',
+    'AI Expert',
+    'Economics Enthusiast',
+    'Futurist',
+    'Builder',
+  ],
+};
+
+const blogPosts = [
+  { title: 'The Problem Space', date: '2025', href: 'https://medium.com/@robbyb_77782' },
+  { title: 'Why fractional CAIO is the right shape', date: '2026', href: 'https://medium.com/@robbyb_77782' },
+  { title: 'Six agent templates for industrial teams', date: '2026', href: 'https://medium.com/@robbyb_77782' },
+];
+
+const socials = [
+  {
+    name: 'GitHub',
+    href: 'https://github.com/HarmonicHemispheres',
+    svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56 0-.27-.01-1.16-.02-2.11-3.2.69-3.87-1.36-3.87-1.36-.52-1.32-1.27-1.67-1.27-1.67-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.27-5.24-5.66 0-1.25.45-2.27 1.18-3.07-.12-.29-.51-1.46.11-3.04 0 0 .96-.31 3.15 1.17.91-.25 1.89-.38 2.86-.39.97.01 1.95.14 2.87.39 2.18-1.48 3.14-1.17 3.14-1.17.62 1.58.23 2.75.11 3.04.74.8 1.18 1.82 1.18 3.07 0 4.4-2.69 5.36-5.25 5.65.41.36.78 1.05.78 2.12 0 1.53-.01 2.76-.01 3.14 0 .31.21.67.8.55C20.21 21.39 23.5 17.07 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>`,
+  },
+  {
+    name: 'LinkedIn',
+    href: 'https://www.linkedin.com/in/robby-boney-717486133/',
+    svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 0H5a5 5 0 0 0-5 5v14a5 5 0 0 0 5 5h14a5 5 0 0 0 5-5V5a5 5 0 0 0-5-5zM8 19H5V8h3v11zM6.5 6.7a1.8 1.8 0 1 1 0-3.6 1.8 1.8 0 0 1 0 3.6zM20 19h-3v-5.6c0-1.4-.5-2.4-1.8-2.4-1 0-1.6.7-1.8 1.4-.1.2-.1.6-.1.9V19h-3V8h3v1.3c.4-.6 1.1-1.5 2.7-1.5 2 0 3.5 1.3 3.5 4.1V19z"/></svg>`,
+  },
+  {
+    name: 'X / Twitter',
+    href: 'https://x.com/raenborn',
+    svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`,
+  },
+  {
+    name: 'SoundCloud',
+    href: 'https://soundcloud.com/raenborn',
+    svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 17.939h-1v-7.166c.333-.13.667-.196 1-.196v7.362zm2 0h1v-8.27c-.333-.158-.667-.255-1-.292v8.562zm-4 0h1v-6.4c-.333.27-.667.624-1 1.062v5.338zm-2-.001h1v-4.692c-.391.687-.703 1.479-.937 2.375.066.749.245 1.521.687 2.317-.083 0 .25 0 .25 0zm17.32-7.507c-.626-3.39-3.6-5.96-7.176-5.96-1.86 0-3.566.696-4.866 1.84-.478.418-.788.945-.788 1.534v9.292c0 .43.343.776.768.776h11.617c2.282 0 4.131-1.85 4.131-4.13 0-2.283-1.849-4.132-4.131-4.132-.078 0-.156.005-.234.008z"/></svg>`,
+  },
+  {
+    name: 'Medium',
+    href: 'https://medium.com/@robbyb_77782',
+    svg: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.54 12a6.8 6.8 0 0 1-6.77 6.82A6.8 6.8 0 0 1 0 12a6.8 6.8 0 0 1 6.77-6.82A6.8 6.8 0 0 1 13.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z"/></svg>`,
+  },
+];
+
+// Waveform bar heights (statically rendered, no flash on hydrate)
+const waveHeights = [40, 55, 80, 65, 90, 70, 85, 55, 72, 95, 60, 80, 50, 68, 88, 72, 55, 90, 65, 78, 42, 68, 85, 55, 72, 60, 90, 80, 55];
+const harmonicWaveHeights = [...waveHeights].reverse();
+const evokingWaveHeights = [...waveHeights.slice(10), ...waveHeights.slice(0, 10)];
+
+const beautifulNightmareUrl = 'https://soundcloud.com/raenborn/beautifulnightmare-final-3-3';
+const ataraxiaUrl = 'https://soundcloud.com/harmonichemispheres/ataraxia-original-mix';
+const evokingPassionUrl = 'https://soundcloud.com/raenborn/evokingpassion-1/s-fFzseYjzLrK';
+const evokingPassionPlayerUrl = 'https://api.soundcloud.com/tracks/1542351691';
+const evokingPassionSecretToken = 's-fFzseYjzLrK';
+const startedDates = {
+  identity: 'Started 2014',
+  gol: 'Started 1970',
+  music: 'Started 2017',
+  magicpill: 'Started 2025',
+  games: 'Started 2026',
+  blog: 'Started 2025',
+  lagrange: 'Started 2026',
+  harmonic: 'Started 2017',
+  evoking: 'Started 2024',
+  contact: 'Started 2025',
+  socials: 'Started 2017',
+};
+
+const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
+  const params = new URLSearchParams({
+    url: trackUrl,
+    auto_play: 'false',
+    hide_related: 'true',
+    show_comments: 'false',
+    show_user: 'false',
+    show_reposts: 'false',
+    visual: 'false',
+    buying: 'false',
+    sharing: 'false',
+    download: 'false',
+    show_artwork: 'false',
+    show_playcount: 'false',
+    color: '#c9356f',
+  });
+
+  if (secretToken) {
+    params.set('secret_token', secretToken);
+  }
+
+  return `https://w.soundcloud.com/player/?${params.toString()}`;
+};
+---
+
+<BaseLayout title="Robby Boney">
+  <div class="page">
+    <main class="bento">
+      <!-- IDENTITY -->
+      <article class="card card-identity pos-identity reveal r1">
+        <div class="identity-top">
+          <div class="id-line">{identity.location}</div>
+          <a class="identity-link" href="/about" aria-label="Open About page">
+            <span>About</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M7 17 17 7M7 7h10v10" />
+            </svg>
+          </a>
+        </div>
+        <h1>{identity.first} <em>{identity.last}</em>.</h1>
+        <div class="id-stamps">
+          {identity.stamps.map((s) => <span class="stamp">{s}</span>)}
+        </div>
+        <span class="card-started">{startedDates.identity}</span>
+      </article>
+
+      <!-- GAME OF LIFE — a little living demo, nod to the old site -->
+      <article class="card card-gol pos-gol reveal r2" id="gol">
+        <a
+          class="gol-link"
+          href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life"
+          target="_blank"
+          rel="noopener"
+          aria-label="Conway's Game of Life on Wikipedia"
+        >
+          Wikipedia ↗
+        </a>
+        <div class="gol-layer"><GameOfLife /></div>
+        <div class="gol-scrim" aria-hidden="true"></div>
+        <div class="gol-foreground">
+          <h3 class="card-title"><em>Life,</em> <br/>on a grid.</h3>
+        </div>
+        <span class="card-started">{startedDates.gol}</span>
+      </article>
+
+      <!-- MUSIC -->
+      <article
+        class="card card-music card-song pos-music reveal r3"
+        id="music"
+        data-song-card
+        data-song-name="Beautiful Nightmare"
+      >
+        <div class="tag"><span class="pip" style="background:var(--aurora-4)"></span>Music</div>
+        <div class="corner-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="music-row">
+          <div class="music-text">
+            <h3 class="card-title">RAENBORN.</h3>
+            <span class="music-sub">Beautiful Nightmare · hover to hear</span>
+          </div>
+          <div class="waveform">
+            {waveHeights.map((h, i) => (
+              <span class="bar" style={`height:${h}%;--d:${(i * 0.04).toFixed(2)}s`}></span>
+            ))}
+          </div>
+        </div>
+        <div class="song-player-wrap" aria-hidden="true">
+          <iframe
+            class="song-player"
+            title="Beautiful Nightmare preview"
+            src={soundcloudPlayerUrl(beautifulNightmareUrl)}
+            allow="autoplay"
+            loading="lazy"
+            tabindex="-1"
+          ></iframe>
+        </div>
+        <span class="card-started">{startedDates.music}</span>
+        <a class="card-link" href={beautifulNightmareUrl} target="_blank" rel="noopener" aria-label="Beautiful Nightmare on SoundCloud"></a>
+      </article>
+
+      <!-- MPL -->
+      <article class="card card-mpl pos-mpl reveal r4" id="magicpill">
+        <div class="mpl-inner">
+          <div class="mpl-logo" role="img" aria-label="MagicPill Labs"></div>
+        </div>
+        <span class="card-started">{startedDates.magicpill}</span>
+        <a class="card-link" href="https://magicpilllabs.com" target="_blank" rel="noopener" aria-label="MagicPill Labs"></a>
+      </article>
+
+      <!-- GAMES -->
+      <article class="card card-games pos-games reveal r5" id="games">
+        <div class="games-lockup" role="img" aria-label="AI Built Games">
+          <div class="games-mark">
+            <span class="games-pixel pixel-1"></span>
+            <span class="games-pixel pixel-2"></span>
+            <span class="games-pixel pixel-3"></span>
+            <span class="games-pixel pixel-4"></span>
+            <span class="games-pixel pixel-5"></span>
+            <svg class="games-logo" viewBox="0 0 260 180" aria-hidden="true">
+              <defs>
+                <linearGradient id="games-shell-gradient" x1="44" y1="52" x2="220" y2="142" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="var(--aurora-6)" />
+                  <stop offset="55%" stop-color="var(--aurora-1)" />
+                  <stop offset="100%" stop-color="var(--aurora-3)" />
+                </linearGradient>
+                <linearGradient id="games-screen-gradient" x1="88" y1="62" x2="174" y2="106" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="rgba(253, 250, 245, 0.9)" />
+                  <stop offset="100%" stop-color="rgba(253, 250, 245, 0.28)" />
+                </linearGradient>
+                <linearGradient id="games-button-gradient" x1="166" y1="82" x2="212" y2="124" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="var(--aurora-3)" />
+                  <stop offset="100%" stop-color="var(--aurora-2)" />
+                </linearGradient>
+              </defs>
+              <path class="games-shell" d="M64 48h132c16 0 29 12 32 28l10 37c4 16-8 31-24 31h-21c-10 0-19-5-25-13l-8-11H100l-8 11c-6 8-15 13-25 13H46c-16 0-28-15-24-31l10-37c3-16 16-28 32-28Z" />
+              <rect class="games-screen" x="86" y="62" width="88" height="42" rx="18" />
+              <rect class="games-scanline" x="100" y="80" width="60" height="6" rx="3" />
+              <path class="games-cross" d="M76 95h14V81h12v14h14v12h-14v14H90v-14H76Z" />
+              <circle class="games-orb button-a" cx="184" cy="86" r="9" />
+              <circle class="games-orb button-b" cx="206" cy="108" r="9" />
+              <circle class="games-mini" cx="171" cy="101" r="4" />
+              <circle class="games-mini" cx="192" cy="122" r="4" />
+              <path class="games-underline" d="M112 133c14 8 28 8 42 0" />
+            </svg>
+          </div>
+          <div class="games-wordmark">
+            <span class="games-word-top">AI-Built</span>
+            <span class="games-word-bottom">Games</span>
+          </div>
+        </div>
+        <span class="card-started">{startedDates.games}</span>
+        <a class="card-link" href="https://harmonichemispheres.github.io/AI-Built-Games/" target="_blank" rel="noopener" aria-label="AI Built Games"></a>
+      </article>
+
+      <!-- BLOG -->
+      <article class="card card-blog pos-blog reveal r6" id="blog">
+        <div class="tag"><span class="pip" style="background:var(--aurora-3)"></span>Words · Medium</div>
+        <div class="corner-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </div>
+        <h3 class="card-title">Recent <em>writing</em>.</h3>
+        <div class="blog-list">
+          {blogPosts.map((p) => (
+            <div class="blog-item">
+              <span class="title">{p.title}</span>
+              <span class="date">{p.date}</span>
+            </div>
+          ))}
+        </div>
+        <span class="card-started">{startedDates.blog}</span>
+        <a class="card-link" href="/blog" aria-label="Blog"></a>
+      </article>
+
+      <article class="card card-lagrange pos-lagrange reveal" id="lagrange">
+        <LagrangeSimulation />
+        <span class="card-started">{startedDates.lagrange}</span>
+      </article>
+
+      <!-- HARMONIC HEMISPHERES -->
+      <article
+        class="card card-music card-song card-harmonic pos-harmonic reveal r7"
+        id="harmonic-hemispheres"
+        data-song-card
+        data-song-name="Ataraxia"
+      >
+        <div class="tag"><span class="pip" style="background:var(--aurora-2)"></span>Project · Sound</div>
+        <div class="corner-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="music-row">
+          <div class="music-text">
+            <h3 class="card-title">Harmonic <em>Hemispheres</em>.</h3>
+            <span class="music-sub">Ataraxia · hover to hear</span>
+          </div>
+          <div class="waveform waveform-harmonic">
+            {harmonicWaveHeights.map((h, i) => (
+              <span class="bar" style={`height:${h}%;--d:${(i * 0.04).toFixed(2)}s`}></span>
+            ))}
+          </div>
+        </div>
+        <div class="song-player-wrap" aria-hidden="true">
+          <iframe
+            class="song-player"
+            title="Ataraxia preview"
+            src={soundcloudPlayerUrl(ataraxiaUrl)}
+            allow="autoplay"
+            loading="lazy"
+            tabindex="-1"
+          ></iframe>
+        </div>
+        <span class="card-started">{startedDates.harmonic}</span>
+        <a class="card-link" href={ataraxiaUrl} target="_blank" rel="noopener" aria-label="Ataraxia on SoundCloud"></a>
+      </article>
+
+      <article
+        class="card card-music card-song card-evoking pos-evoking reveal"
+        id="evoking-passion"
+        data-song-card
+        data-song-name="Evoking Passion"
+      >
+        <div class="tag"><span class="pip" style="background:var(--aurora-6)"></span>Music · Single</div>
+        <div class="corner-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+        </div>
+        <div class="music-row">
+          <div class="music-text">
+            <h3 class="card-title">Evoking <em>Passion</em>.</h3>
+            <span class="music-sub">RAENBORN · hover to hear</span>
+          </div>
+          <div class="waveform waveform-evoking">
+            {evokingWaveHeights.map((h, i) => (
+              <span class="bar" style={`height:${h}%;--d:${(i * 0.04).toFixed(2)}s`}></span>
+            ))}
+          </div>
+        </div>
+        <div class="song-player-wrap" aria-hidden="true">
+          <iframe
+            class="song-player"
+            title="Evoking Passion preview"
+            src={soundcloudPlayerUrl(evokingPassionPlayerUrl, evokingPassionSecretToken)}
+            allow="autoplay"
+            loading="lazy"
+            tabindex="-1"
+          ></iframe>
+        </div>
+        <span class="card-started">{startedDates.evoking}</span>
+        <a class="card-link" href={evokingPassionUrl} target="_blank" rel="noopener" aria-label="Evoking Passion on SoundCloud"></a>
+      </article>
+
+      <!-- CONTACT -->
+      <article class="card card-contact pos-contact reveal r8">
+        <h3 class="card-title">Let's <em>build something</em>.</h3>
+        <a class="email-row" href="mailto:robby.b@magicpilllabs.com">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="m22 6-10 7L2 6" />
+          </svg>
+          robby.b@magicpilllabs.com
+        </a>
+        <span class="card-started">{startedDates.contact}</span>
+      </article>
+
+      <!-- SOCIALS -->
+      <article class="card card-socials pos-socials reveal r9" id="socials">
+        <div class="tag"><span class="pip" style="background:var(--aurora-4)"></span>Links &amp; Socials</div>
+        <div class="socials-row">
+          {socials.map((s) => (
+            <a href={s.href} class="social-link" data-name={s.name} aria-label={s.name} target="_blank" rel="noopener">
+              <Fragment set:html={s.svg} />
+            </a>
+          ))}
+        </div>
+        <span class="card-started">{startedDates.socials}</span>
+      </article>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  /* ============ BENTO MOSAIC ============ */
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-auto-rows: 110px;
+    gap: 14px;
+  }
+
+  /* Row 1 — identity is compact now, GoL takes a bigger slot */
+  .pos-identity { grid-column: 1 / span 6; grid-row: 1 / span 2; }
+  .pos-gol      { grid-column: 7 / span 6; grid-row: 1 / span 4; }
+  .pos-music    { grid-column: 1 / span 6; grid-row: 3 / span 2; }
+  .pos-mpl      { grid-column: 1 / span 8; grid-row: 5 / span 3; }
+  .pos-games    { grid-column: 9 / span 4; grid-row: 5 / span 3; }
+  .pos-blog     { grid-column: 1 / span 5; grid-row: 8 / span 3; }
+  .pos-harmonic { grid-column: 6 / span 7; grid-row: 8 / span 3; }
+  .pos-lagrange { grid-column: 1 / -1; grid-row: 11 / span 4; }
+  .pos-evoking  { grid-column: 1 / -1; grid-row: 15 / span 2; }
+  .pos-contact  { grid-column: 1 / -1; grid-row: 17 / span 2; }
+  .pos-socials  { grid-column: 1 / -1; grid-row: 19 / span 2; }
+
+  /* ============ IDENTITY ============ */
+  .card-identity {
+    background:
+      linear-gradient(135deg, rgba(255, 138, 91, 0.18) 0%, rgba(201, 53, 111, 0.1) 60%, rgba(245, 215, 110, 0.14) 100%),
+      rgba(253, 250, 245, 0.55);
+    padding: 22px 28px;
+    cursor: default;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .card-identity::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 85% 15%, var(--aurora-3) 0%, transparent 45%);
+    opacity: 0.35;
+    pointer-events: none;
+  }
+  .card-identity:hover { transform: none; }
+  .identity-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 2;
+  }
+  .card-identity .id-line {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card-identity .id-line::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--ink-mute);
+  }
+  .card-identity h1 {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(40px, 4.6vw, 68px);
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    margin-top: auto;
+  }
+  .card-identity h1 em {
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(105deg, var(--aurora-6) 0%, var(--aurora-1) 50%, var(--aurora-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .id-stamps { margin-top: 16px; display: flex; gap: 6px; flex-wrap: wrap; }
+  .identity-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid rgba(26, 20, 16, 0.08);
+    border-radius: 16px;
+    background: rgba(253, 250, 245, 0.84);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+    box-shadow: 0 16px 34px -24px rgba(201, 53, 111, 0.45);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+  }
+  .identity-link svg {
+    width: 12px;
+    height: 12px;
+  }
+  .identity-link:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .stamp {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    padding: 5px 10px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: rgba(253, 250, 245, 0.4);
+  }
+
+  .card-started {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    z-index: 4;
+    padding: 8px 12px;
+    border: 1px solid rgba(26, 20, 16, 0.08);
+    border-radius: 999px;
+    background: rgba(253, 250, 245, 0.78);
+    backdrop-filter: blur(16px) saturate(145%);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    color: var(--ink-mute);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    box-shadow: 0 10px 24px -20px rgba(26, 20, 16, 0.35);
+    pointer-events: none;
+  }
+
+  /* ============ MPL ============ */
+  .card-mpl {
+    background:
+      linear-gradient(135deg, rgba(255, 138, 91, 0.2) 0%, rgba(201, 53, 111, 0.14) 100%),
+      rgba(253, 250, 245, 0.6);
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 30px 28px;
+  }
+  .card-mpl::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -20%;
+    width: 70%;
+    height: 140%;
+    background: radial-gradient(circle, var(--aurora-3) 0%, transparent 60%);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .mpl-inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* MagicPill Labs wordmark rendered as a CSS-masked gradient.
+     The SVG becomes an alpha mask; the gradient fills the shape. */
+  .mpl-logo {
+    width: min(560px, 92%);
+    aspect-ratio: 1879 / 550;
+    background: linear-gradient(
+      105deg,
+      var(--aurora-6) 0%,
+      var(--aurora-1) 45%,
+      var(--aurora-3) 100%
+    );
+    -webkit-mask: url('/assets/images/mpl_logo.svg') no-repeat center / contain;
+    mask: url('/assets/images/mpl_logo.svg') no-repeat center / contain;
+    filter: drop-shadow(0 6px 16px rgba(201, 53, 111, 0.25));
+  }
+
+  /* ============ GAME OF LIFE CARD ============ */
+  .card-gol {
+    background:
+      radial-gradient(circle at 20% 80%, rgba(255, 184, 107, 0.28) 0%, transparent 60%),
+      radial-gradient(circle at 80% 20%, rgba(255, 107, 157, 0.22) 0%, transparent 60%),
+      rgba(253, 250, 245, 0.55);
+    padding: 24px 26px;
+    cursor: crosshair;
+    justify-content: flex-end;
+    position: relative;
+  }
+  .card-gol:hover { transform: none; }
+  .gol-link {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(253, 250, 245, 0.78);
+    backdrop-filter: blur(16px) saturate(150%);
+    -webkit-backdrop-filter: blur(16px) saturate(150%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--ink-soft);
+    transition: all 0.25s ease;
+  }
+  .gol-link:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .gol-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none; /* canvas inside re-enables for clicks */
+  }
+  .gol-layer :global(canvas) { pointer-events: auto; }
+
+  /* Frosted scrim — a blur/fade strip at the bottom so the title stays readable
+     against the automata. Sits between the canvas (z:1) and the text (z:3). */
+  .gol-scrim {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 55%;
+    z-index: 2;
+    pointer-events: none;
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+    /* fade the blur/tint from 0 at top to full at bottom */
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 55%);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 55%);
+    background: linear-gradient(
+      to bottom,
+      rgba(253, 250, 245, 0) 0%,
+      rgba(253, 250, 245, 0.55) 55%,
+      rgba(253, 250, 245, 0.75) 100%
+    );
+  }
+
+  .gol-foreground {
+    position: relative;
+    z-index: 3;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .card-gol .card-title {
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1;
+  }
+
+  /* ============ BLOG ============ */
+  .card-blog {
+    background: linear-gradient(135deg, rgba(245, 215, 110, 0.2) 0%, transparent 60%), rgba(253, 250, 245, 0.65);
+    justify-content: center;
+  }
+  .card-blog .card-title { margin-top: 24px; }
+  .blog-list { margin-top: 16px; display: flex; flex-direction: column; }
+  .blog-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 10px 0;
+    border-top: 1px solid var(--line);
+    transition: padding 0.3s ease;
+  }
+  .blog-item:hover { padding-left: 8px; }
+  .blog-item:last-child { border-bottom: 1px solid var(--line); }
+  .blog-item .title {
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.2;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    flex: 1;
+  }
+  .blog-item .date {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    white-space: nowrap;
+  }
+
+  /* ============ LAGRANGE ============ */
+  .card-lagrange {
+    padding: 12px;
+    background:
+      radial-gradient(circle at 24% 26%, rgba(255, 255, 255, 0.42) 0%, transparent 44%),
+      linear-gradient(135deg, rgba(255, 184, 107, 0.14) 0%, rgba(255, 107, 157, 0.14) 100%),
+      rgba(253, 250, 245, 0.72);
+    cursor: default;
+  }
+
+  .card-lagrange::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    border-radius: 16px;
+    border: 1px solid rgba(26, 20, 16, 0.06);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .card-lagrange:hover {
+    transform: translateY(-1px);
+  }
+
+  .card-lagrange .lagrange-sim {
+    min-height: 100%;
+  }
+
+  .card-lagrange .card-started {
+    right: 24px;
+    bottom: 24px;
+    background: rgba(253, 250, 245, 0.66);
+  }
+
+  /* ============ GAMES ============ */
+  .card-games {
+    background:
+      radial-gradient(circle at 26% 28%, rgba(255, 107, 157, 0.24) 0%, transparent 42%),
+      radial-gradient(circle at 76% 72%, rgba(245, 215, 110, 0.28) 0%, transparent 36%),
+      linear-gradient(145deg, rgba(255, 184, 107, 0.14), rgba(255, 138, 91, 0.08) 48%, rgba(201, 53, 111, 0.1) 100%),
+      rgba(253, 250, 245, 0.66);
+    padding: 24px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .card-games::before {
+    content: '';
+    position: absolute;
+    inset: 14px;
+    border-radius: 18px;
+    border: 1px solid rgba(26, 20, 16, 0.08);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+  .games-lockup {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    width: 100%;
+    pointer-events: none;
+  }
+  .games-mark {
+    position: relative;
+    width: min(230px, 86%);
+    aspect-ratio: 1.35;
+    display: grid;
+    place-items: center;
+    animation: games-float 4.8s ease-in-out infinite;
+  }
+  .games-mark::before {
+    content: '';
+    position: absolute;
+    inset: 12% 18%;
+    border-radius: 999px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.62) 0%, rgba(255, 255, 255, 0) 68%);
+    opacity: 0.9;
+  }
+  .games-logo {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    filter: drop-shadow(0 18px 24px rgba(201, 53, 111, 0.16));
+  }
+  .games-shell {
+    fill: url(#games-shell-gradient);
+  }
+  .games-screen {
+    fill: url(#games-screen-gradient);
+    stroke: rgba(253, 250, 245, 0.55);
+    stroke-width: 3;
+  }
+  .games-scanline {
+    fill: rgba(253, 250, 245, 0.9);
+    opacity: 0.7;
+    animation: games-scan 2.6s ease-in-out infinite;
+  }
+  .games-cross {
+    fill: rgba(253, 250, 245, 0.92);
+  }
+  .games-orb {
+    fill: url(#games-button-gradient);
+    transform-origin: center;
+    animation: games-orb 1.7s ease-in-out infinite;
+  }
+  .button-b {
+    animation-delay: 0.28s;
+  }
+  .games-mini {
+    fill: rgba(253, 250, 245, 0.74);
+  }
+  .games-underline {
+    fill: none;
+    stroke: rgba(253, 250, 245, 0.72);
+    stroke-width: 6;
+    stroke-linecap: round;
+  }
+  .games-pixel {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(253, 250, 245, 0.28), 0 8px 20px rgba(201, 53, 111, 0.12);
+    animation: games-pixel 3.6s ease-in-out infinite;
+  }
+  .pixel-1 {
+    top: 8%;
+    left: 10%;
+    background: linear-gradient(135deg, var(--aurora-6), var(--aurora-4));
+  }
+  .pixel-2 {
+    top: 18%;
+    right: 8%;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, var(--aurora-3), var(--aurora-2));
+    animation-delay: -0.6s;
+  }
+  .pixel-3 {
+    right: 4%;
+    bottom: 26%;
+    background: linear-gradient(135deg, var(--aurora-1), var(--aurora-2));
+    animation-delay: -1.4s;
+  }
+  .pixel-4 {
+    bottom: 12%;
+    left: 15%;
+    width: 11px;
+    height: 11px;
+    background: linear-gradient(135deg, var(--aurora-3), var(--aurora-5));
+    animation-delay: -0.9s;
+  }
+  .pixel-5 {
+    left: 3%;
+    top: 40%;
+    width: 9px;
+    height: 9px;
+    background: linear-gradient(135deg, var(--aurora-4), var(--aurora-1));
+    animation-delay: -1.8s;
+  }
+  .games-wordmark {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  .games-word-top {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.34em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    padding-left: 0.34em;
+  }
+  .games-word-bottom {
+    font-family: var(--display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(30px, 4vw, 42px);
+    line-height: 1;
+    letter-spacing: -0.035em;
+    background: linear-gradient(105deg, var(--aurora-6) 0%, var(--aurora-1) 52%, var(--aurora-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: games-glow 3s ease-in-out infinite;
+  }
+  @keyframes games-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes games-orb {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+  }
+  @keyframes games-scan {
+    0%, 100% { opacity: 0.25; transform: translateY(-8px); }
+    50% { opacity: 0.95; transform: translateY(8px); }
+  }
+  @keyframes games-pixel {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.82; }
+    50% { transform: translateY(-10px) scale(1.08); opacity: 1; }
+  }
+  @keyframes games-glow {
+    0%, 100% { filter: drop-shadow(0 0 0 rgba(201, 53, 111, 0)); }
+    50% { filter: drop-shadow(0 8px 18px rgba(201, 53, 111, 0.22)); }
+  }
+
+  /* ============ MUSIC (wide horizontal bar) ============ */
+  .card-music {
+    background: linear-gradient(160deg, rgba(255, 107, 157, 0.24), rgba(201, 53, 111, 0.14) 60%, transparent), rgba(253, 250, 245, 0.6);
+    padding: 28px 32px;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .card-song {
+    position: relative;
+  }
+  .card-song::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent 55%);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+  }
+  .card-song.is-playing::after,
+  .card-song:hover::after {
+    opacity: 1;
+  }
+  .card-song.is-playing {
+    border-color: rgba(201, 53, 111, 0.28);
+    box-shadow: 0 22px 60px -26px rgba(201, 53, 111, 0.32), var(--shadow-card);
+  }
+  .music-row {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    width: 100%;
+  }
+  .music-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+  .card-music .card-title { font-size: 32px; line-height: 1; }
+  .music-sub {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .waveform {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 56px;
+    min-width: 0;
+  }
+  .waveform .bar {
+    flex: 1;
+    background: linear-gradient(180deg, var(--aurora-1), var(--aurora-6));
+    border-radius: 2px;
+    min-height: 3px;
+    height: 100%;
+    opacity: 0.85;
+    animation: pulse 1.8s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+    transform-origin: center;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .card-song.is-playing .waveform .bar {
+    opacity: 1;
+    animation-duration: 1.15s;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scaleY(0.25); }
+    50% { transform: scaleY(1); }
+  }
+  .card-harmonic {
+    background:
+      linear-gradient(145deg, rgba(245, 215, 110, 0.24), rgba(255, 184, 107, 0.16) 48%, rgba(201, 53, 111, 0.1) 100%),
+      rgba(253, 250, 245, 0.65);
+  }
+  .card-harmonic .waveform .bar {
+    background: linear-gradient(180deg, var(--aurora-3), var(--aurora-1));
+  }
+  .card-evoking {
+    background:
+      linear-gradient(145deg, rgba(255, 107, 157, 0.22), rgba(255, 184, 107, 0.16) 52%, rgba(201, 53, 111, 0.12) 100%),
+      rgba(253, 250, 245, 0.66);
+  }
+  .card-evoking .waveform .bar {
+    background: linear-gradient(180deg, var(--aurora-6), var(--aurora-2));
+  }
+  .song-player-wrap {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .song-player {
+    width: 1px;
+    height: 1px;
+    border: 0;
+  }
+
+  /* ============ CONTACT ============ */
+  .card-contact {
+    background: linear-gradient(135deg, rgba(255, 138, 91, 0.18), rgba(245, 215, 110, 0.12)), rgba(253, 250, 245, 0.65);
+    cursor: default;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 36px;
+    gap: 24px;
+  }
+  .card-contact:hover { transform: translateY(-2px); }
+  .card-contact .card-title { font-size: clamp(24px, 2.6vw, 36px); margin: 0; }
+  .email-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 18px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    background: rgba(253, 250, 245, 0.7);
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 6;
+  }
+  .email-row:hover {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+    transform: translateY(-1px);
+  }
+
+  /* ============ SOCIALS ============ */
+  .card-socials {
+    background: rgba(253, 250, 245, 0.7);
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    padding: 36px 28px 28px;
+  }
+  .card-socials:hover { transform: none; }
+  .card-socials .tag { top: 16px; left: 20px; }
+  .socials-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 24px;
+    width: 100%;
+    max-width: 700px;
+    flex-wrap: wrap;
+  }
+  .social-link {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--line);
+    background: rgba(253, 250, 245, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    text-decoration: none;
+    position: relative;
+  }
+  .social-link :global(svg) { width: 22px; height: 22px; transition: transform 0.3s ease; }
+  .social-link:hover {
+    border-color: var(--aurora-6);
+    background: linear-gradient(135deg, rgba(255, 138, 91, 0.15), rgba(201, 53, 111, 0.1));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px -8px rgba(180, 80, 40, 0.4);
+  }
+  .social-link:hover :global(svg) { transform: scale(1.1); color: var(--aurora-6); }
+  .social-link::after {
+    content: attr(data-name);
+    position: absolute;
+    bottom: -22px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    white-space: nowrap;
+  }
+  .social-link:hover::after { opacity: 1; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 900px) {
+    .pos-identity { grid-column: span 12; grid-row: span 2; }
+    .pos-gol      { grid-column: span 12; grid-row: span 3; }
+    .pos-music    { grid-column: span 12; grid-row: span 2; }
+    .pos-mpl      { grid-column: span 7; grid-row: span 3; }
+    .pos-games    { grid-column: span 5; grid-row: span 3; }
+    .pos-blog     { grid-column: span 12; grid-row: span 3; }
+    .pos-harmonic { grid-column: span 12; grid-row: span 2; }
+    .pos-lagrange { grid-column: span 12; grid-row: span 4; }
+    .pos-evoking  { grid-column: span 12; grid-row: span 2; }
+    .pos-contact  { grid-column: span 12; grid-row: span 2; }
+    .pos-socials  { grid-column: 1 / -1; grid-row: span 2; }
+  }
+  @media (max-width: 700px) {
+    .bento { grid-auto-rows: auto; gap: 12px; }
+    .pos-identity, .pos-gol, .pos-mpl,
+    .pos-music, .pos-games, .pos-blog, .pos-lagrange, .pos-harmonic, .pos-evoking, .pos-contact, .pos-socials {
+      grid-column: span 12;
+      grid-row: auto;
+    }
+    .card-identity { min-height: 220px; }
+    .card-gol, .card-mpl { min-height: 280px; }
+    .card-music, .card-games { min-height: 200px; }
+    .card-lagrange { min-height: 260px; }
+    .card-blog { min-height: 320px; }
+    .card-contact { flex-direction: column; align-items: flex-start; min-height: 140px; }
+    .card-socials { min-height: 120px; }
+    .socials-row { gap: 16px; }
+    .social-link { width: 48px; height: 48px; }
+    .music-row { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .waveform { width: 100%; }
+    .card-started {
+      right: 14px;
+      bottom: 14px;
+      padding: 7px 10px;
+      font-size: 8px;
+    }
+  }
+</style>
+
+<script is:inline>
+  const soundCloudApiUrl = 'https://w.soundcloud.com/player/api.js';
+  const fadeStepMs = 40;
+  const fadeInDurationMs = 480;
+  const lingerFadeOutDurationMs = 18000;
+  const handoffFadeOutDurationMs = 900;
+  const targetVolume = 58;
+
+  function loadSoundCloudApi() {
+    return new Promise((resolve, reject) => {
+      if (window.SC?.Widget) {
+        resolve(window.SC.Widget);
+        return;
+      }
+
+      const existing = document.querySelector(`script[src="${soundCloudApiUrl}"]`);
+      if (existing) {
+        existing.addEventListener('load', () => resolve(window.SC.Widget), { once: true });
+        existing.addEventListener('error', reject, { once: true });
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = soundCloudApiUrl;
+      script.async = true;
+      script.onload = () => resolve(window.SC.Widget);
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  loadSoundCloudApi()
+    .then(() => {
+      const songCards = Array.from(document.querySelectorAll('[data-song-card]'));
+      if (!songCards.length) return;
+
+      const controllers = new Map();
+      let activeCard = null;
+
+      function clearFade(state) {
+        if (state.fadeTimer) {
+          clearInterval(state.fadeTimer);
+          state.fadeTimer = null;
+        }
+      }
+
+      function fadeTo(card, state, volumeTarget, { pauseAfter = false, duration = fadeInDurationMs } = {}) {
+        clearFade(state);
+
+        const start = state.volume;
+        const steps = Math.max(1, Math.round(duration / fadeStepMs));
+        let step = 0;
+
+        state.fadeTimer = window.setInterval(() => {
+          step += 1;
+          const t = step / steps;
+          state.volume = Math.round(start + (volumeTarget - start) * t);
+          state.widget.setVolume(state.volume);
+
+          if (step >= steps) {
+            clearFade(state);
+            state.volume = volumeTarget;
+            state.widget.setVolume(volumeTarget);
+
+            if (pauseAfter && volumeTarget === 0) {
+              state.widget.pause();
+              state.playing = false;
+              card.classList.remove('is-playing');
+            }
+          }
+        }, fadeStepMs);
+      }
+
+      function stopCard(card, duration = lingerFadeOutDurationMs) {
+        const state = controllers.get(card);
+        if (!state || !state.ready) return;
+        state.pendingPlay = false;
+        card.classList.remove('is-playing');
+        fadeTo(card, state, 0, { pauseAfter: true, duration });
+
+        if (activeCard === card) {
+          activeCard = null;
+        }
+      }
+
+      function playCard(card) {
+        const state = controllers.get(card);
+        if (!state) return;
+
+        if (!state.ready) {
+          state.pendingPlay = true;
+          return;
+        }
+
+        if (activeCard && activeCard !== card) {
+          stopCard(activeCard, handoffFadeOutDurationMs);
+        }
+
+        clearFade(state);
+        card.classList.add('is-playing');
+        state.widget.play();
+        state.playing = true;
+        state.pendingPlay = false;
+        activeCard = card;
+        fadeTo(card, state, targetVolume, { duration: fadeInDurationMs });
+      }
+
+      songCards.forEach((card) => {
+        const iframe = card.querySelector('.song-player');
+        if (!iframe) return;
+
+        const widget = window.SC.Widget(iframe);
+        const state = {
+          widget,
+          ready: false,
+          volume: 0,
+          playing: false,
+          pendingPlay: false,
+          fadeTimer: null,
+        };
+
+        controllers.set(card, state);
+
+        widget.bind(window.SC.Widget.Events.READY, () => {
+          state.ready = true;
+          state.widget.setVolume(0);
+
+          if (state.pendingPlay || card.matches(':hover') || card.contains(document.activeElement)) {
+            playCard(card);
+          }
+        });
+
+        const enter = () => playCard(card);
+        const leave = () => stopCard(card);
+
+        card.addEventListener('pointerenter', enter);
+        card.addEventListener('pointerleave', leave);
+        card.addEventListener('focusin', enter);
+        card.addEventListener('focusout', (event) => {
+          if (!card.contains(event.relatedTarget)) {
+            leave();
+          }
+        });
+      });
+    })
+    .catch(() => {
+      // Best-effort enhancement: if the SoundCloud widget API fails to load,
+      // the cards still function as links.
+    });
+</script>

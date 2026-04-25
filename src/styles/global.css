@@ -1,0 +1,338 @@
+/* ============================================================
+   robbyboney.com — Aurora / Bento design tokens & base styles
+   ============================================================ */
+
+:root {
+  --ink: #1a1410;
+  --ink-soft: #3d2f24;
+  --ink-mute: #7a6557;
+  --paper: #fdfaf5;
+  --line: rgba(26, 20, 16, 0.12);
+  --line-soft: rgba(26, 20, 16, 0.06);
+
+  --aurora-1: #ff8a5b;
+  --aurora-2: #ffb86b;
+  --aurora-3: #f5d76e;
+  --aurora-4: #ff6b9d;
+  --aurora-5: #ffd4a3;
+  --aurora-6: #c9356f;
+
+  --serif: "Cormorant Garamond", "Times New Roman", serif;
+  --display: "Fraunces", "Cormorant Garamond", serif;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+
+  --shadow-card: 0 1px 2px rgba(26, 20, 16, 0.04),
+    0 8px 24px -8px rgba(180, 80, 40, 0.12),
+    0 24px 64px -24px rgba(180, 80, 40, 0.18);
+  --shadow-float: 0 20px 60px -20px rgba(180, 80, 40, 0.35),
+    0 4px 12px rgba(26, 20, 16, 0.08);
+  --shadow-dropdown: 0 24px 48px -12px rgba(26, 20, 16, 0.18),
+    0 4px 8px rgba(26, 20, 16, 0.04);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.55;
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============ AURORA BACKGROUND ============ */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.aurora::before,
+.aurora::after,
+.aurora .blob {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.7;
+  animation: drift 22s ease-in-out infinite;
+}
+.aurora::before {
+  width: 60vw;
+  height: 60vw;
+  background: radial-gradient(circle, var(--aurora-1) 0%, transparent 65%);
+  top: -10vw;
+  left: -10vw;
+}
+.aurora::after {
+  width: 55vw;
+  height: 55vw;
+  background: radial-gradient(circle, var(--aurora-4) 0%, transparent 65%);
+  bottom: -15vw;
+  right: -10vw;
+  animation-delay: -7s;
+}
+.aurora .blob-1 {
+  width: 45vw;
+  height: 45vw;
+  background: radial-gradient(circle, var(--aurora-3) 0%, transparent 65%);
+  top: 30vh;
+  left: 40vw;
+  animation-delay: -14s;
+  opacity: 0.55;
+}
+.aurora .blob-2 {
+  width: 35vw;
+  height: 35vw;
+  background: radial-gradient(circle, var(--aurora-2) 0%, transparent 65%);
+  top: 60vh;
+  left: 5vw;
+  animation-delay: -4s;
+  opacity: 0.6;
+}
+.aurora .blob-3 {
+  width: 30vw;
+  height: 30vw;
+  background: radial-gradient(circle, var(--aurora-6) 0%, transparent 70%);
+  top: 5vh;
+  right: 25vw;
+  animation-delay: -11s;
+  opacity: 0.4;
+}
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(4vw, -3vh) scale(1.08);
+  }
+  50% {
+    transform: translate(-3vw, 4vh) scale(0.95);
+  }
+  75% {
+    transform: translate(3vw, 3vh) scale(1.05);
+  }
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.5;
+  background:
+    radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px) 0 0 / 3px 3px,
+    linear-gradient(180deg, rgba(253, 250, 245, 0.3) 0%, rgba(253, 250, 245, 0.6) 100%);
+  mix-blend-mode: overlay;
+}
+
+/* ============ PAGE SHELL ============ */
+.page {
+  position: relative;
+  z-index: 2;
+  max-width: 1340px;
+  margin: 0 auto;
+  padding: 96px 32px 64px;
+}
+
+.page-narrow {
+  max-width: 820px;
+}
+
+/* ============ SHARED CARD ============ */
+.card {
+  background: rgba(253, 250, 245, 0.65);
+  backdrop-filter: blur(24px) saturate(150%);
+  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-float);
+  border-color: rgba(26, 20, 16, 0.18);
+}
+.card a.card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+.tag {
+  position: absolute;
+  top: 20px;
+  left: 22px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 3;
+}
+.tag .pip {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--aurora-6);
+}
+
+.corner-arrow {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-mute);
+  transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  background: rgba(253, 250, 245, 0.4);
+  z-index: 4;
+}
+.corner-arrow svg {
+  width: 11px;
+  height: 11px;
+  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.card:hover .corner-arrow {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+.card:hover .corner-arrow svg {
+  transform: translate(2px, -2px);
+}
+
+.card-title {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.card-title em {
+  font-style: italic;
+  color: var(--aurora-6);
+}
+
+/* ============ PROSE (inner pages) ============ */
+.prose {
+  font-family: var(--serif);
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.prose h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+.prose h1 em {
+  font-style: italic;
+  background: linear-gradient(105deg, var(--aurora-6) 0%, var(--aurora-1) 50%, var(--aurora-3) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.prose h2 {
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 28px;
+  margin: 40px 0 12px;
+  letter-spacing: -0.015em;
+}
+.prose p {
+  margin-bottom: 1.1em;
+}
+.prose a {
+  color: var(--aurora-6);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+.prose a:hover {
+  color: var(--ink);
+}
+
+/* ============ ENTRANCE ANIMATIONS ============ */
+.reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: reveal 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.r1 { animation-delay: 0.04s; }
+.r2 { animation-delay: 0.10s; }
+.r3 { animation-delay: 0.16s; }
+.r4 { animation-delay: 0.22s; }
+.r5 { animation-delay: 0.28s; }
+.r6 { animation-delay: 0.34s; }
+.r7 { animation-delay: 0.40s; }
+.r8 { animation-delay: 0.46s; }
+.r9 { animation-delay: 0.52s; }
+
+/* ============ FOOTER ============ */
+.footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+.footer .heart {
+  color: var(--aurora-6);
+}
+
+/* ============ RESPONSIVE SHELL ============ */
+@media (max-width: 700px) {
+  .page {
+    padding: 88px 14px 40px;
+  }
+}

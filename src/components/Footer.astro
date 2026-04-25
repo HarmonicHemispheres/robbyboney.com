@@ -1,0 +1,9 @@
+---
+const year = new Date().getFullYear();
+const { version = '4.0 · Aurora' } = Astro.props;
+---
+
+<footer class="footer reveal r9">
+  <div>© {year} Robby Boney · <span class="heart">♡</span></div>
+  <div>v {version}</div>
+</footer>

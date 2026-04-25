@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Viability in the Age of ASI — Robby Boney</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {
+    delimiters: [
+      {left: '$$', right: '$$', display: true},
+      {left: '\\(', right: '\\)', display: false}
+    ],
+    throwOnError: false
+  });"
+></script>
+<style>
+:root {
+  --ink: #1a1a2e;
+  --ink-soft: #3d3d5c;
+  --ink-muted: #6b6b8a;
+  --accent: #c0392b;
+  --gold: #c8a45e;
+  --gold-light: #f5e6c8;
+  --cream: #faf8f5;
+  --cream-warm: #f5f0e8;
+  --rule: #d4cfc5;
+  --rule-light: #e8e4dc;
+  --eq-bg: #f7f5f0;
+  --table-header: #1a1a2e;
+  --table-alt: #faf8f5;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', 'Consolas', monospace;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 18px; scroll-behavior: smooth; }
+body {
+  font-family: var(--serif);
+  color: var(--ink);
+  background: var(--cream);
+  line-height: 1.72;
+  -webkit-font-smoothing: antialiased;
+}
+.katex { font-size: 1.08em; }
+.katex-display { margin: 0; }
+
+/* Navigation */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(26,26,46,0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(200,164,94,0.2);
+  padding: 0 2rem; height: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: transform 0.3s;
+}
+nav.hidden { transform: translateY(-100%); }
+.nav-title {
+  font-family: var(--sans); font-weight: 600; font-size: 0.72rem;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold);
+}
+.nav-links { display: flex; gap: 0.25rem; }
+.nav-links a {
+  font-family: var(--sans); font-size: 0.65rem; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: rgba(255,255,255,0.55); text-decoration: none;
+  padding: 0.35rem 0.65rem; border-radius: 4px; transition: all 0.2s;
+}
+.nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(200,164,94,0.15); }
+
+/* Page */
+.page {
+  max-width: 820px; margin: 0 auto;
+  padding: 5rem 2.5rem 4rem; min-height: 100vh;
+}
+.page + .page { border-top: 1px solid var(--rule-light); }
+
+/* Title page */
+.title-page {
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center; min-height: 100vh;
+  padding-top: 0; position: relative;
+}
+.title-page::before {
+  content: ''; position: absolute;
+  top: 0; left: -50vw; right: -50vw; bottom: 0;
+  background: linear-gradient(175deg, var(--ink) 0%, #16213e 45%, #1a1a2e 100%);
+  z-index: -1;
+}
+.title-eyebrow {
+  font-family: var(--sans); font-size: 0.65rem; font-weight: 600;
+  letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 2rem; opacity: 0; animation: fadeUp 0.8s 0.3s forwards;
+}
+.title-main {
+  font-family: var(--serif); font-size: 3.2rem; font-weight: 700;
+  line-height: 1.15; color: #fff; margin-bottom: 1rem;
+  opacity: 0; animation: fadeUp 0.8s 0.5s forwards;
+}
+.title-sub {
+  font-family: var(--serif); font-size: 1.25rem; font-weight: 400;
+  font-style: italic; color: rgba(255,255,255,0.55);
+  max-width: 560px; margin-bottom: 3rem;
+  opacity: 0; animation: fadeUp 0.8s 0.7s forwards;
+}
+.title-rule {
+  width: 80px; height: 2px; background: var(--gold); margin-bottom: 2rem;
+  opacity: 0; animation: fadeUp 0.8s 0.9s forwards;
+}
+.title-author {
+  font-family: var(--sans); font-size: 0.85rem; font-weight: 600;
+  color: rgba(255,255,255,0.8); letter-spacing: 0.05em;
+  opacity: 0; animation: fadeUp 0.8s 1.0s forwards;
+}
+.title-affiliation {
+  font-family: var(--sans); font-size: 0.75rem; color: rgba(255,255,255,0.4);
+  margin-top: 0.3rem; opacity: 0; animation: fadeUp 0.8s 1.1s forwards;
+}
+.title-date {
+  font-family: var(--serif); font-style: italic; font-size: 0.8rem;
+  color: rgba(255,255,255,0.3); margin-top: 1.5rem;
+  opacity: 0; animation: fadeUp 0.8s 1.2s forwards;
+}
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  opacity: 0; animation: fadeUp 0.8s 1.5s forwards;
+}
+.scroll-hint span {
+  display: block; width: 20px; height: 32px;
+  border: 2px solid rgba(200,164,94,0.4); border-radius: 10px; position: relative;
+}
+.scroll-hint span::after {
+  content: ''; position: absolute; top: 6px; left: 50%;
+  width: 3px; height: 6px; background: var(--gold); border-radius: 2px;
+  transform: translateX(-50%); animation: scrollDot 1.8s infinite;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scrollDot {
+  0%, 100% { opacity: 1; top: 6px; }
+  50% { opacity: 0.3; top: 16px; }
+}
+
+/* Part dividers */
+.part-divider {
+  display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center; min-height: 50vh;
+  padding: 6rem 2rem; position: relative;
+}
+.part-divider::before {
+  content: ''; position: absolute;
+  top: 0; left: -50vw; right: -50vw; bottom: 0;
+  background: linear-gradient(170deg, var(--ink) 0%, #0f3460 100%);
+  z-index: -1;
+}
+.part-label {
+  font-family: var(--sans); font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 1.2rem;
+}
+.part-title {
+  font-family: var(--serif); font-size: 2rem; font-weight: 700;
+  color: #fff; line-height: 1.25; max-width: 500px;
+}
+.part-subtitle {
+  font-family: var(--serif); font-style: italic; font-size: 1rem;
+  color: rgba(255,255,255,0.45); margin-top: 0.8rem;
+}
+
+/* Typography */
+h1 {
+  font-family: var(--serif); font-size: 2rem; font-weight: 700;
+  color: var(--ink); margin: 3rem 0 1.2rem; line-height: 1.2;
+}
+h1::after {
+  content: ''; display: block; width: 40px; height: 2.5px;
+  background: var(--accent); margin-top: 0.6rem;
+}
+h2 { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; color: var(--ink); margin: 2.2rem 0 0.8rem; }
+h3 { font-family: var(--sans); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); margin: 1.8rem 0 0.6rem; }
+p { margin-bottom: 1rem; font-size: 1rem; font-weight: 400; }
+strong { font-weight: 600; }
+em { font-style: italic; }
+.lead { font-size: 1.12rem; line-height: 1.8; color: var(--ink-soft); }
+
+/* Equations */
+.eq-display {
+  background: var(--eq-bg); border: 1px solid var(--rule-light);
+  border-radius: 6px; padding: 1.3rem 1.5rem; margin: 1.5rem 0;
+  text-align: center; overflow-x: auto;
+}
+.eq-display .katex { font-size: 1.15em; }
+.eq-system {
+  background: var(--eq-bg); border: 1px solid var(--rule-light);
+  border-radius: 6px; padding: 1.3rem 1.5rem; margin: 1.5rem 0;
+  overflow-x: auto;
+}
+.eq-system .eq-row {
+  display: flex; align-items: baseline; gap: 1.2rem; padding: 0.25rem 0;
+}
+.eq-system .eq-row .eq-formula { flex: 1; text-align: center; }
+.eq-system .eq-row .eq-label {
+  font-family: var(--sans); font-size: 0.72rem; color: var(--ink-muted);
+  white-space: nowrap; min-width: 200px; text-align: right;
+}
+
+/* Highlight */
+.highlight-box {
+  background: var(--cream-warm); border-left: 3px solid var(--gold);
+  padding: 1.2rem 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0;
+}
+.highlight-box p { margin-bottom: 0; font-weight: 500; }
+.highlight-box .eq-display { background: transparent; border: none; margin: 0.8rem 0 0.4rem; }
+
+/* Tables */
+.table-wrap { margin: 1.5rem 0; overflow-x: auto; border-radius: 8px; border: 1px solid var(--rule); }
+table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+thead { background: var(--table-header); }
+th {
+  font-family: var(--sans); font-weight: 600; font-size: 0.7rem;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-light);
+  padding: 0.75rem 1rem; text-align: left; border-bottom: 2px solid var(--gold);
+}
+td { padding: 0.65rem 1rem; border-bottom: 1px solid var(--rule-light); vertical-align: top; line-height: 1.55; }
+tbody tr:nth-child(even) { background: var(--table-alt); }
+tbody tr:hover { background: var(--gold-light); transition: background 0.15s; }
+td:first-child { font-weight: 500; white-space: nowrap; }
+.table-caption { font-family: var(--sans); font-size: 0.72rem; color: var(--ink-muted); text-align: center; padding: 0.5rem 0 0; font-style: italic; }
+
+/* References */
+.references p { font-size: 0.82rem; line-height: 1.6; color: var(--ink-soft); padding-left: 2rem; text-indent: -2rem; margin-bottom: 0.5rem; }
+.page-footer { text-align: center; padding: 3rem 0 2rem; font-family: var(--sans); font-size: 0.7rem; color: var(--ink-muted); letter-spacing: 0.06em; }
+
+@media (max-width: 700px) {
+  html { font-size: 16px; }
+  .page { padding: 4rem 1.2rem 3rem; }
+  .title-main { font-size: 2.2rem; }
+  .part-title { font-size: 1.5rem; }
+  h1 { font-size: 1.6rem; }
+  .nav-links { display: none; }
+  .eq-system .eq-row { flex-direction: column; gap: 0.2rem; }
+  .eq-system .eq-row .eq-label { text-align: left; min-width: auto; }
+}
+@media print {
+  nav { display: none; }
+  .page { padding: 2rem 0; min-height: auto; }
+  .title-page { min-height: auto; padding: 4rem 0; }
+  .title-page::before, .part-divider::before { display: none; }
+  .title-main, .part-title { color: var(--ink); }
+  .title-sub, .title-eyebrow, .title-author, .title-affiliation, .title-date { color: var(--ink-soft); }
+  .part-label { color: var(--accent); }
+  .part-subtitle { color: var(--ink-muted); }
+  .scroll-hint { display: none; }
+  body { background: #fff; }
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="nav-title">Viability in the Age of ASI</div>
+  <div class="nav-links">
+    <a href="#abstract">Abstract</a>
+    <a href="#part1">I · Products</a>
+    <a href="#part2">II · People</a>
+    <a href="#part3">III · Markets</a>
+    <a href="#part4">IV · Synthesis</a>
+    <a href="#references">Refs</a>
+  </div>
+</nav>
+
+<section class="page title-page" id="top">
+  <div class="title-eyebrow">Working Paper · March 2026</div>
+  <h1 class="title-main" style="margin:0;">Viability in the<br>Age of ASI</h1>
+  <p class="title-sub">A Unified Mathematical Framework for Products, People, and Markets Under AI Commoditization</p>
+  <div class="title-rule"></div>
+  <div class="title-author">Robby Boney</div>
+  <div class="title-affiliation">MagicPill Labs</div>
+  <div class="title-date">Working Draft — March 2026</div>
+  <div class="scroll-hint"><span></span></div>
+</section>
+
+<section class="page" id="abstract">
+  <h1>Abstract</h1>
+  <p class="lead">As artificial intelligence approaches superintelligence, the marginal cost of creating software converges toward zero. This raises three interconnected questions that together determine the viability of any business or career: <em>Will customers still pay for this product? Will organizations still pay for this person?</em> And <em>will enough paying customers exist to sustain either?</em></p>
+  <p>This paper presents a unified three-level framework. At the product level, we identify nine categories of ASI-resistant moats and develop a purchase probability model \(P(\text{pay})\) whose central result is that long-run product viability converges to moat strength: \(\mathbf{V_\infty = \Phi}\). At the individual level, we derive five irreducible human functions from first principles and show that career viability converges to the degree one’s work involves these functions: \(\mathbf{V_{i,\infty} = \eta}\). At the macroeconomic level, we close the loop: even fortress-level moats face revenue contraction if aggregate demand shrinks. We formalize the displacement–demand feedback system, introduce the Demand-Adjusted Viability Score \(\mathbf{\Omega}\), and assess three equilibrium scenarios with probability-weighted policy implications.</p>
+  <div class="highlight-box">
+    <p><strong>The unified result:</strong> every strategic question reduces to three sub-questions — Is my moat strong enough? Are the human functions irreducible enough? And will the economy sustain enough demand for it to matter?</p>
+  </div>
+</section>
+
+<section class="page" id="introduction">
+  <h1>1. Introduction</h1>
+  <p>The traditional buy-versus-build decision in software is a cost comparison: is paying someone else cheaper than doing it myself? What is unprecedented about the current moment is that AI is collapsing the “do it myself” side of that equation at an exponential rate. Anthropic recently demonstrated sixteen AI agents building a complete C compiler from scratch — 100,000 lines of Rust passing 99% of GCC’s torture tests — for $20,000 in two weeks, with no human writing code (Anthropic, 2025). Open-source models trail proprietary frontier models by roughly three months (Interconnects, 2025). The set of things that require human software engineering is shrinking rapidly.</p>
+  <p>This creates an existential question for every product built primarily on code, for every knowledge worker whose output can be described as information processing, and for every economy whose consumption depends on those workers’ paychecks.</p>
+  <p>This paper integrates all three levels into a single decision framework. <strong>Part I</strong> develops the product viability model. <strong>Part II</strong> develops the individual viability model. <strong>Part III</strong> closes the macroeconomic loop. <strong>Part IV</strong> synthesizes the three levels into a unified decision framework with worked examples.</p>
+  <p>The central analytical result is a convergence theorem expressed at three levels: long-run product viability converges to moat strength (\(V_\infty = \Phi\)), long-run individual viability converges to human necessity (\(V_{i,\infty} = \eta\)), and long-run market sustainability converges to viability discounted by demand (\(\Omega_\infty = \Phi \cdot M_\infty\) for products; \(\Omega_\infty = \eta \cdot E_\infty\) for individuals).</p>
+</section>
+
+<section class="part-divider" id="part1">
+  <div class="part-label">Part I</div>
+  <div class="part-title">Product Viability</div>
+  <div class="part-subtitle">Buy vs. Build in the Age of ASI</div>
+</section>
+
+<section class="page">
+  <h1>2. ASI-Resistant Moats</h1>
+  <p>We define a <strong>moat resilience factor</strong> \(\Phi \in [0,\, 1]\) where \(\Phi = 0\) means pure software trivially replicable by AI, and \(\Phi = 1\) means completely immune to AI commoditization. \(\Phi\) is computed as a multiplicative complement of individual moat strengths:</p>
+  <div class="eq-display">$$\Phi \;=\; 1 \;-\; \prod_{j}\bigl(1 - \varphi_j\bigr)$$</div>
+  <p>This structure is deliberate. Each moat independently prevents commoditization, and multiple moats compound protection nonlinearly. If a product has proprietary data at 0.7 and liability transfer at 0.6, the composite is \(\Phi = 1 - (0.3)(0.4) = 0.88\), not 1.3. A product with three moderate moats is often more defensible than one with a single strong moat.</p>
+
+  <h2>2.1 The Nine Moat Categories</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Symbol</th><th>Moat Category</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>\(\varphi_D\)</td><td>Proprietary Data & Institutional Knowledge</td><td>Data assets and compounding process intelligence the customer cannot replicate, even with AI.</td></tr>
+        <tr><td>\(\varphi_L\)</td><td>Liability Transfer</td><td>Risk transfer to the provider. Contractual accountability, insurance backing, regulatory certification.</td></tr>
+        <tr><td>\(\varphi_N\)</td><td>Network Effects</td><td>Value increasing with user count. Distinguishes shallow (weakening) from deep liquidity/trust networks (persisting).</td></tr>
+        <tr><td>\(\varphi_I\)</td><td>Integration Depth</td><td>Deep interoperability with proprietary APIs, institutional partnerships, regulatory gateways.</td></tr>
+        <tr><td>\(\varphi_T\)</td><td>Trust / Brand</td><td>Institutional reliability brand (strengthening) vs. marketing brand (weakening as AI enables benchmarking).</td></tr>
+        <tr><td>\(\varphi_H\)</td><td>Human Accountability</td><td>Regulatory mandates requiring licensed professionals to bear personal responsibility.</td></tr>
+        <tr><td>\(\varphi_P\)</td><td>Physical Infrastructure</td><td>Data centers, GPU clusters, energy contracts, sensor networks — absolute barriers to self-building.</td></tr>
+        <tr><td>\(\varphi_R\)</td><td>Exclusive Rights / IP</td><td>Patents, regulatory licenses, copyrights, government certifications. Near-zero AI-driven decay.</td></tr>
+        <tr><td>\(\varphi_S\)</td><td>Switching Costs</td><td>Migration pain, workflow retraining. Fastest-decaying moat; operates as temporal drag, not initial boost.</td></tr>
+      </tbody>
+    </table>
+    <div class="table-caption">Table 1. The nine ASI-resistant moat categories.</div>
+  </div>
+
+  <h2>2.2 Genuine vs. Perceived Moats</h2>
+  <p>Many moats that appeared strong pre-AI were actually <em>friction-dependent</em>. Our framework addresses this through a <strong>cross-validation protocol</strong>. For each moat rated \(\geq 0.3\), evaluators answer four stress-test questions: (1) Does this moat depend on human friction that AI could eliminate? (2) Is it genuinely proprietary? (3) Would it survive if AI capability doubled tomorrow? (4) Does it <em>strengthen</em> or weaken with AI improvement?</p>
+  <p>Critically, some moats <em>appreciate</em> with AI advancement. Liability transfer (\(\varphi_L\)) becomes more valuable as AI systems grow more powerful but less predictable. Proprietary data (\(\varphi_D\)) becomes more valuable as models improve at extracting signal from exclusive datasets.</p>
+</section>
+
+<section class="page">
+  <h1>3. The Purchase Probability Model</h1>
+  <p>The probability that a target customer pays for a product rather than self-building is:</p>
+  <div class="eq-display">$$P(\text{pay}) \;=\; \sigma\!\Bigl(\,\Phi \cdot \lambda \;+\; \max\!\bigl(1{-}\Phi,\;\alpha\bigr)\cdot\beta\cdot\ln\!\frac{\mathrm{CE}(C_b)}{p} \;-\; \pi(p)\cdot\psi\,\Bigr)$$</div>
+  <p>Where \(\sigma(x) = \dfrac{1}{1 + e^{-x}}\) is the sigmoid function squashing the composite score into \([0,\,1]\). The equation has three terms, each capturing a distinct mechanism.</p>
+
+  <h2>3.1 Term 1: The Moat Term \(\bigl(\Phi \cdot \lambda\bigr)\)</h2>
+  <p>This is the baseline probability of payment regardless of AI capability. The scaling constant \(\lambda\) (typically 2–4) governs how strongly moats guarantee payment. At \(\lambda = 3.0\), a moat of \(\Phi = 0.9\) pushes the sigmoid input to 2.7, yielding approximately 93% base probability. <strong>When moats are strong, this term dominates and people pay even if they could theoretically replicate the code.</strong></p>
+
+  <h2>3.2 Term 2: The Value Ratio</h2>
+  <p>The term \(\max(1{-}\Phi,\;\alpha)\cdot\beta\cdot\ln\!\bigl(\mathrm{CE}(C_b)/p\bigr)\) captures the cost advantage of paying versus self-building. The logarithmic formulation reflects the Weber–Fechner law: humans perceive cost differences logarithmically. The certainty-equivalent cost replaces raw self-build cost with a risk-adjusted version:</p>
+  <div class="eq-display">$$\mathrm{CE}(C_b) \;=\; C_{b,\text{perceived}} \;+\; \frac{\rho \,\sigma_c^{\,2}}{2}$$</div>
+  <p>Self-build cost decomposes into four components with distinct AI-driven decay rates: <strong>build cost</strong> (\(\mu_1 = 0.5\text{–}1.5\)), <strong>operations</strong> (\(\mu_2 = 0.2\text{–}0.6\)), <strong>maintenance</strong> (\(\mu_3 = 0.1\text{–}0.4\)), and <strong>compliance</strong> (\(\mu_4 = 0.02\text{–}0.15\)). Customers systematically underweight slow-decaying components through perception discount factors \(\delta_i\).</p>
+
+  <h2>3.3 Term 3: Price Friction \(\bigl(\pi(p)\cdot\psi\bigr)\)</h2>
+  <p>The price sensitivity function \(\pi(p) = \sigma\!\bigl(k\cdot(p - p^*)\bigr)\) models a sigmoid transition: below the evaluation threshold \(p^*\), customers pay without analysis. The self-reliance disposition \(\psi \in [0,\,1]\) scales the friction.</p>
+
+  <h2>3.4 Stakes Amplification</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Severity Tier</th><th>Failure Consequence</th><th>Key Moat Amplifications</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Inconvenience — wasted time</td><td>None</td></tr>
+        <tr><td>2</td><td>Financial loss — bounded, recoverable</td><td>\(+0.1\) to \(\varphi_L,\;\varphi_T\)</td></tr>
+        <tr><td>3</td><td>Business risk — customer-facing errors</td><td>\(+0.2\) to \(\varphi_L\); \(+0.15\) to \(\varphi_T\)</td></tr>
+        <tr><td>4</td><td>Legal exposure — regulatory penalties</td><td>\(+0.35\) to \(\varphi_L\); \(+0.25\) to \(\varphi_T\); \(+0.3\) to \(\varphi_H\)</td></tr>
+        <tr><td>5</td><td>Safety / life — irreversible consequences</td><td>\(+0.5\) to \(\varphi_L\); \(+0.4\) to \(\varphi_T\); \(+0.5\) to \(\varphi_H\)</td></tr>
+      </tbody>
+    </table>
+    <div class="table-caption">Table 2. Severity tiers and moat amplifications (individual moats capped at 1.0).</div>
+  </div>
+</section>
+
+<section class="page">
+  <h1>4. Temporal Dynamics and the Central Result</h1>
+  <p>As AI improves, customers become more AI-fluent, which further reduces self-build cost. We model this co-evolution as a coupled dynamical system:</p>
+  <div class="eq-system">
+    <div class="eq-row">
+      <div class="eq-formula">$$\frac{dA_{\text{tech}}}{dt} = r_1 \cdot A_{\text{tech}}\bigl(1 - A_{\text{tech}}\bigr)$$</div>
+      <div class="eq-label">AI capability: logistic growth</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$\frac{dA_{\text{user}}}{dt} = r_2 \cdot A_{\text{tech}}\bigl(1 - A_{\text{user}}\bigr)$$</div>
+      <div class="eq-label">User fluency: pulled by capability</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$\frac{dV}{dt} = -A_{\text{user}}\cdot(1 - \Phi)\cdot V \;+\; \Phi\cdot(1 - V)$$</div>
+      <div class="eq-label">Viability: erosion vs. moat stabilization</div>
+    </div>
+  </div>
+
+  <div class="highlight-box">
+    <p><strong>The Central Result.</strong> Setting \(dV/dt = 0\) at full user fluency \((A_{\text{user}} \to 1)\) yields:</p>
+    <div class="eq-display">$$\boxed{\;V_\infty \;=\; \Phi\;}$$</div>
+    <p><em>In the long run, product viability converges exactly to moat strength.</em> Pricing strategy, current AI capability, customer sophistication — all affect the trajectory, but none affect the destination. Only \(\Phi\) determines whether a product survives.</p>
+  </div>
+  <p>A product with \(\Phi = 0.3\) has a long-run viability ceiling of 30%. A product with \(\Phi = 0.85\) retains approximately 85% of customers even in a world of fully capable AI. The question every founder should ask is not “what is my product worth today?” but <strong>“what is my \(\Phi\)?”</strong></p>
+
+  <h2>4.1 The Flip Moment</h2>
+  <p>The <strong>flip moment</strong> is the time \(t^*\) where \(P(\text{pay})(t)\) crosses below a viability threshold (typically 0.5). For strong moats \((\Phi > 0.8)\), the flip may never arrive. For moderate moats \((\Phi = 0.4\text{–}0.7)\), it typically falls within 3–8 years. For weak moats \((\Phi < 0.3)\), within 1–3 years.</p>
+</section>
+
+<section class="part-divider" id="part2">
+  <div class="part-label">Part II</div>
+  <div class="part-title">Individual Viability</div>
+  <div class="part-subtitle">The Human Residual</div>
+</section>
+
+<section class="page">
+  <h1>5. Why Business Moats Don’t Map to Individuals</h1>
+  <p>The temptation is to take the nine moats and reinterpret them as career moats. This is a <strong>category error</strong> for three reasons. First, a business moat protects against <em>customer self-building</em>; an individual’s value is about whether the <em>function they perform</em> can be eliminated entirely. Second, individuals compete simultaneously against AI automation, AI-augmented humans, and organizational restructuring. Third, a product delivers value through output; an individual delivers value through <em>position in the organizational system</em>.</p>
+  <p>Instead, we ask: <strong>why do organizations need humans at all?</strong></p>
+</section>
+
+<section class="page">
+  <h1>6. Five Irreducible Human Functions</h1>
+  <p>Coase (1937) argued organizations exist because they reduce transaction costs. As AI reduces those costs toward zero, firms should shrink. But AI also introduces <em>new categories of organizational need</em>. When a firm delegates decisions to AI agents, it creates agency problems — but you cannot align an AI agent through stock options, career incentives, or reputational stakes. This creates irreducible human functions: things organizations need humans for not because AI <em>can’t</em> do the task, but because legal, social, and organizational systems <em>require</em> a human in that position.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Symbol</th><th>Function</th><th>Core Principle</th></tr></thead>
+      <tbody>
+        <tr><td>\(\eta_C\)</td><td><strong>Consequence Bearing</strong></td><td>Someone must be legally, financially, and reputationally liable. AI cannot be sued, fired, jailed, or shamed.</td></tr>
+        <tr><td>\(\eta_D\)</td><td><strong>Direction</strong></td><td>Deciding <em>what to do</em> — setting goals, framing problems, resolving value conflicts — when the answer isn’t computable.</td></tr>
+        <tr><td>\(\eta_T\)</td><td><strong>Taste & Discernment</strong></td><td>Knowing what’s good when quality isn’t objectively measurable. Separating signal from noise, resonance from competence.</td></tr>
+        <tr><td>\(\eta_R\)</td><td><strong>Relational Legitimacy</strong></td><td>Humans extend trust, grant permission, and form commitments only with other humans.</td></tr>
+        <tr><td>\(\eta_S\)</td><td><strong>System Bridging</strong></td><td>Navigating informal, undocumented, socially constructed organizational interfaces that AI cannot traverse.</td></tr>
+      </tbody>
+    </table>
+    <div class="table-caption">Table 3. The five irreducible human functions.</div>
+  </div>
+
+  <h2>6.1 Consequence Bearing \((\eta_C)\)</h2>
+  <p>The most ASI-resistant function because it arises from the <em>architecture of law and society</em>, not AI’s limitations. The EU AI Act’s Article 14 mandates human oversight for high-risk AI. As AI becomes more capable, legal requirements for human accountability are <em>expanding</em>. This function <strong>appreciates</strong> with AI capability.</p>
+
+  <h2>6.2 Direction \((\eta_D)\)</h2>
+  <p>Merges judgment under uncertainty and goal setting. The key distinction: <strong>computable decisions</strong> (more data improves the answer) vs. <strong>structural decisions</strong> (answer depends on values, context, commitment). AI reduces the first rapidly; the second is irreducible. This function strongly appreciates: as AI commoditizes execution, the relative value of deciding <em>which instructions to give</em> increases monotonically.</p>
+
+  <h2>6.3 Taste & Discernment \((\eta_T)\)</h2>
+  <p>When AI can generate anything, the ability to determine <em>what’s good</em> becomes a distinct bottleneck. Direction answers “what should we do?” Taste answers “is this good?” The crucial insight: <em>taste can exist without technical expertise, and technical expertise can exist without taste.</em> This function accelerates in value as AI creates “aesthetic inflation.”</p>
+
+  <h2>6.4 Relational Legitimacy \((\eta_R)\)</h2>
+  <p>Many transactions require a human counterparty because social and legal infrastructure makes them <em>legitimate</em> only with human involvement. Includes information asymmetry from human networks: confidential conversations, informal agreements, the “meeting after the meeting.”</p>
+
+  <h2>6.5 System Bridging \((\eta_S)\)</h2>
+  <p>Organizations have formal structures and informal structures. AI operates on the formal. The person who navigates the informal — who actually makes decisions, which rules are flexible, which norms are unwritten — that’s system bridging. Slowly depreciating for formal systems, stable to appreciating for informal ones.</p>
+</section>
+
+<section class="page">
+  <h1>7. The Human Necessity Score \((\eta)\)</h1>
+  <p>For an individual or role, the composite Human Necessity Score is computed as a weighted power mean:</p>
+  <div class="eq-display">$$\eta \;=\; \Biggl(\,\sum_{i \in \{C,D,T,R,S\}} w_i \cdot \eta_i^{\,\gamma}\,\Biggr)^{\!1/\gamma}$$</div>
+  <p>The <strong>power mean</strong> structure reflects a structural difference: products benefit from moat <em>independence</em> (any moat alone protects), while people benefit from function <em>complementarity</em> (multiple functions create outsized value). With \(\gamma = 2\), a person scoring \([0.8,\, 0.7,\, 0.6,\, 0.3,\, 0.5]\) achieves \(\eta \approx 0.62\), while \([0.9,\, 0.2,\, 0.1,\, 0.1,\, 0.1]\) yields \(\eta \approx 0.42\).</p>
+
+  <h2>7.1 Domain Weights</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Domain</th><th>\(w_C\)</th><th>\(w_D\)</th><th>\(w_T\)</th><th>\(w_R\)</th><th>\(w_S\)</th></tr></thead>
+      <tbody>
+        <tr><td style="white-space:normal;">Regulated (healthcare, finance, legal)</td><td>0.30</td><td>0.25</td><td>0.10</td><td>0.15</td><td>0.20</td></tr>
+        <tr><td style="white-space:normal;">Enterprise technology</td><td>0.15</td><td>0.25</td><td>0.15</td><td>0.15</td><td>0.30</td></tr>
+        <tr><td style="white-space:normal;">Professional services</td><td>0.15</td><td>0.25</td><td>0.15</td><td>0.30</td><td>0.15</td></tr>
+        <tr><td style="white-space:normal;">Creative / media</td><td>0.10</td><td>0.15</td><td>0.40</td><td>0.15</td><td>0.20</td></tr>
+        <tr><td style="white-space:normal;">Startups / venture</td><td>0.10</td><td>0.30</td><td>0.25</td><td>0.15</td><td>0.20</td></tr>
+      </tbody>
+    </table>
+    <div class="table-caption">Table 4. Recommended domain weights for the Human Necessity Score.</div>
+  </div>
+  <p>A <strong>domain consequence multiplier</strong> \(\delta \in [1.0,\, 2.0]\) amplifies \(\eta_C\) and \(\eta_D\) before weight normalization, with individual function scores capped at 1.0.</p>
+
+  <h2>7.2 The Individual Convergence Result</h2>
+  <div class="eq-display">$$\boxed{\;V_{i,\infty} \;=\; \eta\;}$$</div>
+  <div class="highlight-box">
+    <p><strong>Long-run individual career viability converges to the Human Necessity Score.</strong> When moats are strong \((\Phi \to 1)\), individual viability is partially protected — but only for roles that contribute to the moat. When moats are weak, viability depends entirely on \(\eta\). Organizations become smaller and more human-intensive per capita.</p>
+  </div>
+</section>
+
+<section class="part-divider" id="part3">
+  <div class="part-label">Part III</div>
+  <div class="part-title">Market Sustainability</div>
+  <div class="part-subtitle">The Demand Paradox</div>
+</section>
+
+<section class="page">
+  <h1>8. The Displacement–Demand Feedback System</h1>
+  <p>Parts I and II model supply-side disruption while treating aggregate demand as exogenous. Both implicitly assume that if a product has strong moats, <em>someone will buy it</em>. These assumptions do not necessarily hold when AI is simultaneously reshaping labor markets, consumer bases, and organizational structure.</p>
+  <div class="highlight-box">
+    <p><strong>The gap:</strong> the models predict who survives, but not whether the economy can sustain them. The legal SaaS product with \(\Phi \approx 0.998\) has fortress-level moats — but when AI eliminates 40% of associate positions at its client law firms, <em>sustainability</em> is a different question from <em>viability</em>.</p>
+  </div>
+
+  <h2>8.1 Formalizing the Feedback</h2>
+  <div class="eq-system">
+    <div class="eq-row">
+      <div class="eq-formula">$$\frac{dA}{dt} = r_A \cdot A\,(1 - A)$$</div>
+      <div class="eq-label">AI capability: logistic growth</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$\frac{dL}{dt} = -\alpha_d \cdot A \cdot L \;+\; \alpha_r(t)\cdot(1 - L)$$</div>
+      <div class="eq-label">Labor: displacement vs. reinstatement</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$D(t) = D_{\text{base}} + \omega_L\, L(t) + \omega_K\, K(t) + \omega_G\, G(t)$$</div>
+      <div class="eq-label">Demand: labor + capital + government</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$M(t) = f\!\bigl(D(t),\;\text{segment}\bigr)$$</div>
+      <div class="eq-label">Market: demand-dependent</div>
+    </div>
+  </div>
+  <p>Acemoglu and Restrepo (2019) showed that historically, displacement has been counterbalanced by reinstatement. Between 1947 and 1987, displacement averaged 17% while reinstatement created 19%. Since 1987, reinstatement has weakened while displacement has accelerated.</p>
+
+  <h2>8.2 Ghost GDP</h2>
+  <p>When firms replace workers with AI, output continues but the income channel narrows. This is <strong>Ghost GDP</strong>: economic output that appears in productivity statistics but never enters the consumption economy. The income circulation ratio</p>
+  <div class="eq-display">$$\theta(t) \;=\; \frac{W(t) + T(t)}{Y(t)}$$</div>
+  <p>can decline even as \(Y\) grows. The top 20% of U.S. earners now account for over half of consumer spending. Knowledge workers most exposed to AI are disproportionately in this group, creating a <strong>consumption concentration amplifier</strong> where each percentage point of displacement reduces demand by 1.4–1.8 percentage points.</p>
+</section>
+
+<section class="page">
+  <h1>9. Three Equilibrium Scenarios</h1>
+
+  <h2>9.1 Scenario A: Managed Transition <span style="color:var(--ink-muted);font-weight:400;font-size:0.9em;">\((p = 30\text{–}45\%)\)</span></h2>
+  <p>Reinstatement keeps pace with displacement. \(L(t)\) stabilizes within 2–5 years, \(M(t)\) dips temporarily (5–15%) but recovers. The parent models’ predictions hold with minor adjustments.</p>
+
+  <h2>9.2 Scenario B: Engels’ Pause 2.0 <span style="color:var(--ink-muted);font-weight:400;font-size:0.9em;">\((p = 35\text{–}45\%)\)</span></h2>
+  <p><strong>The modal scenario.</strong> Displacement leads reinstatement by 5–15 years. Named after the 1790–1840 period when British GDP per capita grew 46% while working-class wages rose 12% (Allen, 2009). Products with \(\Phi > 0.7\) remain viable but face smaller addressable markets. Revenue \(= P(\text{pay}) \times M(t) \times N_{\text{customers}} \times p\), and \(M(t)\) declining 15–25% is severe even for fortress products. Only \(\eta > 0.8\) experiences stable demand.</p>
+
+  <h2>9.3 Scenario C: Demand Collapse <span style="color:var(--ink-muted);font-weight:400;font-size:0.9em;">\((p = 10\text{–}20\%)\)</span></h2>
+  <p>A self-reinforcing spiral. \(L(t)\) drops below 0.6, \(D(t)\) contracts 30–50%. Low probability but severe enough to warrant planning against.</p>
+</section>
+
+<section class="page">
+  <h1>10. Structural Dynamics</h1>
+
+  <h2>10.1 Three Brakes on Collapse</h2>
+  <p><strong>The liability gradient:</strong> Legal systems require human accountability, protecting an estimated 25–35% of knowledge-worker employment. <strong>The micro-enterprise explosion:</strong> Displaced workers become micro-entrepreneurs. The junior data analyst (\(\eta \approx 0.11\)) who starts a niche advisory practice might score \(\eta \approx 0.65\) as a solopreneur. <strong>The deflation dividend:</strong> If AI reduces prices faster than incomes, real purchasing power increases.</p>
+
+  <h2>10.2 Three Accelerants</h2>
+  <p><strong>Ghost GDP concentration</strong> is self-reinforcing. <strong>The reinstatement gap</strong> — AI is the first technology substituting broadly for <em>cognitive</em> tasks. <strong>The skills–access mismatch</strong> — 77% of emerging AI-driven roles require a master’s degree or equivalent.</p>
+
+  <h2>10.3 The Micro-Enterprise Equilibrium</h2>
+  <p>The micro-enterprise reinstatement rate is modulated by ecosystem favorability \(F(t)\):</p>
+  <div class="eq-display">$$\frac{dL_{\text{micro}}}{dt} = \beta_m \cdot \bigl(1 - L(t)\bigr)\cdot A(t) \cdot F(t)$$</div>
+  <p>AI capability both displaces workers <em>and</em> enables their reentry as entrepreneurs — but only if the infrastructure exists to support it.</p>
+</section>
+
+<section class="part-divider" id="part4">
+  <div class="part-label">Part IV</div>
+  <div class="part-title">Synthesis</div>
+  <div class="part-subtitle">The Unified Decision Framework</div>
+</section>
+
+<section class="page">
+  <h1>11. The Demand-Adjusted Viability Score \((\Omega)\)</h1>
+
+  <h2>11.1 For Products</h2>
+  <div class="eq-display">$$\Omega_P(t) \;=\; P(\text{pay})(t)\;\cdot\; M(t)\;\cdot\; S(t)$$</div>
+
+  <h2>11.2 For Individuals</h2>
+  <div class="eq-display">$$\Omega_I(t) \;=\; \eta \;\cdot\; E(t) \;\cdot\; R(t)$$</div>
+
+  <h2>11.3 Worked Examples</h2>
+
+  <h3>Legal Document Review SaaS</h3>
+  <p><strong>Product:</strong> \(\Phi \approx 0.998\), \(P(\text{pay}) \approx 96.8\%\). <strong>Individual:</strong> CCO scores \(\eta \approx 0.84\); senior PM scores \(\eta \approx 0.67\). <strong>Macro:</strong> \(M(t) \approx 0.80\), \(S(t) \approx 0.90\). \(\Omega_P \approx 0.968 \times 0.80 \times 0.90 \approx\) <strong>0.70</strong>.</p>
+
+  <h3>AI Website Builder</h3>
+  <p><strong>Product:</strong> \(\Phi \approx 0.55\), \(P(\text{pay})\) converging to 55%. <strong>Macro:</strong> \(M(t) \approx 0.85\), \(S(t) \approx 0.75\). \(\Omega_P \approx 0.55 \times 0.85 \times 0.75 \approx\) <strong>0.35</strong>.</p>
+
+  <h3>Junior Data Analyst</h3>
+  <p><strong>Individual:</strong> \(\eta \approx 0.11\). <strong>Macro:</strong> \(E(t) \approx 0.50\), \(R(t) \approx 0.60\). \(\Omega_I \approx 0.108 \times 0.50 \times 0.60 \approx\) <strong>0.03</strong>.</p>
+</section>
+
+<section class="page">
+  <h1>12. The Complete Decision Matrix</h1>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>\(\Phi\)</th><th>\(\eta\) (team)</th><th>Macro</th><th>\(\Omega_P\)</th><th>Recommendation</th></tr></thead>
+      <tbody>
+        <tr><td>\(> 0.8\)</td><td>\(> 0.7\)</td><td>Any</td><td>\(> 0.55\)</td><td><strong>Build confidently.</strong> Fortress moats, high human necessity, resilient across scenarios.</td></tr>
+        <tr><td>\(> 0.8\)</td><td>\(> 0.7\)</td><td>B or C</td><td>\(0.40\text{–}0.55\)</td><td><strong>Build with demand hedging.</strong> Strong moats but contracting market.</td></tr>
+        <tr><td>\(0.5\text{–}0.8\)</td><td>\(0.4\text{–}0.7\)</td><td>A</td><td>\(0.45\text{–}0.70\)</td><td><strong>Build with moat strengthening.</strong> Viable under managed transition but vulnerable.</td></tr>
+        <tr><td>\(0.5\text{–}0.8\)</td><td>\(0.4\text{–}0.7\)</td><td>B</td><td>\(0.25\text{–}0.45\)</td><td><strong>Build cautiously.</strong> Must strengthen moats or pivot to micro-enterprise customers.</td></tr>
+        <tr><td>\(< 0.5\)</td><td>\(< 0.4\)</td><td>Any</td><td>\(< 0.25\)</td><td><strong>Do not build.</strong> Insufficient moats, necessity, and demand.</td></tr>
+      </tbody>
+    </table>
+    <div class="table-caption">Table 5. The complete strategic decision matrix.</div>
+  </div>
+</section>
+
+<section class="page">
+  <h1>13. The Unified Convergence</h1>
+  <div class="eq-system">
+    <div class="eq-row">
+      <div class="eq-formula">$$V_\infty = \Phi$$</div>
+      <div class="eq-label">Long-run product viability converges to moat strength</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$V_{i,\infty} = \eta$$</div>
+      <div class="eq-label">Long-run individual viability converges to human necessity</div>
+    </div>
+    <div class="eq-row">
+      <div class="eq-formula">$$\Omega_\infty = \Phi \cdot M_\infty$$</div>
+      <div class="eq-label">Market sustainability converges to viability × demand</div>
+    </div>
+  </div>
+  <div class="highlight-box">
+    <p><strong>Every strategic question reduces to three sub-questions:</strong> Is my moat strong enough? Are the human functions irreducible enough? And will the economy sustain enough demand for it to matter?</p>
+  </div>
+</section>
+
+<section class="page">
+  <h1>14. Strategic Implications</h1>
+  <h2>14.1 For Product Builders</h2>
+  <p><strong>Invest in breadth of moats.</strong> Adding a moderate moat in a new dimension often strengthens \(\Phi\) more than deepening an existing one. <strong>Price for the valley.</strong> The 2026–2032 window will see demand conditions worse than either the current state or the eventual equilibrium. <strong>Serve the emerging micro-enterprise economy.</strong></p>
+
+  <h2>14.2 For Individuals</h2>
+  <p><strong>Move toward consequence.</strong> Take personal responsibility for outcomes. <strong>Move up the direction stack</strong> from execution (\(\eta_D \approx 0\)) to direction setting (\(0.8\)). <strong>Develop taste as a distinct asset.</strong> <strong>Build micro-enterprise capability as insurance.</strong></p>
+
+  <h2>14.3 For Policymakers</h2>
+  <p>The valley of death between displacement and institutional response is opening now. The highest-leverage intervention: investing in micro-enterprise infrastructure.</p>
+</section>
+
+<section class="page">
+  <h1>15. Limitations and Future Work</h1>
+  <p><strong>Empirical calibration.</strong> The framework’s parameters — \(\lambda,\; \mu,\; \gamma,\; \alpha_d,\; \alpha_r\) — require calibration against observed data. <strong>Multi-player dynamics.</strong> The model evaluates products in isolation. <strong>Geographic heterogeneity.</strong> <strong>Interaction effects</strong> among the five functions. <strong>Collective human necessity</strong> at the team level.</p>
+</section>
+
+<section class="page">
+  <h1>16. Conclusion</h1>
+  <p>We have presented a unified framework for evaluating viability at three levels. The core finding is a convergence theorem at each level: product viability converges to moat strength, individual viability converges to human necessity, and market sustainability converges to viability discounted by demand.</p>
+  <p>The most likely macroeconomic outcome is an <strong>Engels’ Pause 2.0</strong> — a sustained period where productivity surges, income concentrates, and the gap between measured output and lived economic experience widens.</p>
+  <p><em>The practical implication is direct:</em> compute your \(\Phi\), compute your \(\eta\), assess your \(\Omega\). Those three numbers, more than any financial projection or market analysis, determine whether an idea, a career, or a business survives the AI commodity wave. The first two are within your control. The third determines the threshold at which your control matters.</p>
+</section>
+
+<section class="page references" id="references">
+  <h1>References</h1>
+  <p>Acemoglu, D., & Restrepo, P. (2019). “Automation and New Tasks.” <em>Journal of Economic Perspectives</em>, 33(2), 3–30.</p>
+  <p>Allen, R. C. (2009). “Engels’ Pause.” <em>Explorations in Economic History</em>, 46(4), 418–435.</p>
+  <p>Anthropic. (2025). “Building a C Compiler with AI Agents.” Anthropic Engineering Blog.</p>
+  <p>Citrini Research. (2026). “The 2028 Global Intelligence Crisis.”</p>
+  <p>Coase, R. H. (1937). “The Nature of the Firm.” <em>Economica</em>, 4(16), 386–405.</p>
+  <p>Fechner, G. T. (1860). <em>Elemente der Psychophysik</em>. Leipzig: Breitkopf und Härtel.</p>
+  <p>Goldman Sachs Research. (2025). “How Will AI Affect the Global Workforce?”</p>
+  <p>Helmer, H. (2016). <em>7 Powers</em>. Deep Strategy LLC.</p>
+  <p>Humberd, B. et al. (2026). “When AI Becomes an Agent of the Firm.” <em>Journal of Management Studies</em>.</p>
+  <p>Interconnects. (2025). “2025 Open Models Year in Review.”</p>
+  <p>Jaipuria, T. (2026). “Moats in the Age of AI.” <em>Tanay’s Newsletter</em>.</p>
+  <p>Kahneman, D., & Tversky, A. (1979). “Prospect Theory.” <em>Econometrica</em>, 47(2), 263–291.</p>
+  <p>McKinsey Global Institute. (2023). “The Economic Potential of Generative AI.”</p>
+  <p>Roth, C. (2026). “Moats in the Age of AI.” cjroth.com.</p>
+  <p>Vázquez Martínez, U. J., & Tan, Y. (2026). “Abundant Intelligence and Deficient Demand.” arXiv:2603.09209.</p>
+  <p>Weber, E. H. (1834). <em>De Pulsu, Resorptione, Auditu et Tactu</em>. Leipzig: Koehler.</p>
+  <p>Williamson, O. E. (1981). “The Economics of Organization.” <em>American Journal of Sociology</em>, 87(3), 548–577.</p>
+  <p>World Economic Forum. (2025). <em>Future of Jobs Report 2025</em>.</p>
+  <div class="page-footer">Viability in the Age of ASI · Boney · MagicPill Labs · 2026</div>
+</section>
+
+<script>
+let lastY = 0;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const y = window.scrollY;
+  if (y > 400 && y > lastY) nav.classList.add('hidden');
+  else nav.classList.remove('hidden');
+  lastY = y;
+  const sections = ['abstract','part1','part2','part3','part4','references'];
+  const links = nav.querySelectorAll('.nav-links a');
+  let current = '';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 200) current = id;
+  });
+  links.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+</body>
+</html>

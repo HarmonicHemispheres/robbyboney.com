@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" role="img" aria-labelledby="title desc">
+  <title id="title">Portrait placeholder for Robby Boney</title>
+  <desc id="desc">An editorial placeholder portrait with warm gradients and the initials RB.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fff4e7"/>
+      <stop offset="48%" stop-color="#f9e4c2"/>
+      <stop offset="100%" stop-color="#f3d3b7"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ff8a5b"/>
+      <stop offset="55%" stop-color="#c9356f"/>
+      <stop offset="100%" stop-color="#f5d76e"/>
+    </linearGradient>
+    <filter id="blur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="36"/>
+    </filter>
+  </defs>
+  <rect width="800" height="1000" rx="48" fill="url(#bg)"/>
+  <circle cx="620" cy="210" r="170" fill="#ffffff" opacity="0.45" filter="url(#blur)"/>
+  <circle cx="180" cy="760" r="200" fill="#ffcfaa" opacity="0.55" filter="url(#blur)"/>
+  <rect x="72" y="72" width="656" height="856" rx="34" fill="none" stroke="rgba(26,20,16,0.08)"/>
+  <path d="M188 790V212h174c82 0 140 43 140 118 0 56-33 94-87 110 66 13 109 60 109 132 0 96-74 158-190 158H188Zm113-339h48c59 0 95-25 95-72 0-43-31-67-87-67h-56v139Zm0 246h67c66 0 102-29 102-82 0-53-39-82-111-82h-58v164Zm300 93V212h111v236h14l139-236h123L832 477l171 313H874L742 536h-30v254H601Z" fill="#1a1410" opacity="0.12"/>
+  <path d="M132 866C208 688 333 576 507 530" fill="none" stroke="url(#accent)" stroke-width="6" stroke-linecap="round" opacity="0.4"/>
+  <path d="M552 140c51 28 94 80 117 157" fill="none" stroke="#c9356f" stroke-width="5" stroke-linecap="round" opacity="0.34"/>
+  <text x="92" y="140" font-family="'JetBrains Mono', monospace" font-size="20" letter-spacing="6" fill="#7a6557">ROBBY BONEY</text>
+  <text x="92" y="894" font-family="'JetBrains Mono', monospace" font-size="18" letter-spacing="4" fill="#7a6557">PORTRAIT PLACEHOLDER</text>
+</svg>

@@ -1,0 +1,336 @@
+---
+// Floating dropdown nav — matches the Aurora mockup.
+// Links are resolved against the site root so the component works on any page.
+import { navItems } from '../data/nav.ts';
+
+const groups = [
+  { label: 'Self',  keys: ['about', 'music', 'socials'] },
+  { label: 'Work',  keys: ['magicpill', 'hexero', 'games'] },
+  { label: 'Words', keys: ['blog'] },
+];
+
+function itemsFor(keys: string[]) {
+  return keys
+    .map((k) => navItems.find((n) => n.id === k))
+    .filter((n): n is (typeof navItems)[number] => Boolean(n));
+}
+---
+
+<div class="nav-anchor">
+  <button class="nav-trigger" id="navTrigger" aria-label="Open navigation" aria-expanded="false">
+    <svg class="tree-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12h6M3 6h12M3 18h9" />
+      <circle cx="18" cy="6" r="2" />
+      <circle cx="15" cy="12" r="2" />
+      <circle cx="14" cy="18" r="2" />
+    </svg>
+    <span class="name-slug">Robby Boney</span>
+    <span>Index</span>
+    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  </button>
+
+  <div class="nav-dropdown" id="navDropdown" role="dialog" aria-label="Site navigation">
+    <div class="nav-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="7" />
+        <path d="m21 21-4.35-4.35" />
+      </svg>
+      <input type="text" id="navSearch" placeholder="search the orchard…" autocomplete="off" />
+      <span class="esc">ESC</span>
+    </div>
+
+    <nav class="nav-tree" id="navTree">
+      {groups.map((group) => {
+        const items = itemsFor(group.keys);
+        return (
+          <div class="nav-section">
+            <div class="nav-section-label">{group.label}</div>
+            {items.map((item, i) => {
+              const isLast = i === items.length - 1;
+              return (
+                <a class="nav-item" href={item.href} data-keys={item.keywords}>
+                  <span class="branch">{isLast ? '└─' : '├─'}</span>
+                  <span class="icon" set:html={item.icon}></span>
+                  <span class="label">{item.label}</span>
+                  <span class="desc">{item.desc}</span>
+                </a>
+              );
+            })}
+          </div>
+        );
+      })}
+    </nav>
+  </div>
+</div>
+
+<script>
+  const trigger = document.getElementById('navTrigger');
+  const dropdown = document.getElementById('navDropdown');
+  const search = document.getElementById('navSearch') as HTMLInputElement | null;
+  const items = document.querySelectorAll<HTMLElement>('.nav-item');
+
+  function openNav() {
+    dropdown?.classList.add('open');
+    trigger?.classList.add('open');
+    trigger?.setAttribute('aria-expanded', 'true');
+    setTimeout(() => search?.focus(), 120);
+  }
+  function closeNav() {
+    dropdown?.classList.remove('open');
+    trigger?.classList.remove('open');
+    trigger?.setAttribute('aria-expanded', 'false');
+    if (search) search.value = '';
+    items.forEach((i) => i.classList.remove('hidden'));
+  }
+  function toggleNav() {
+    dropdown?.classList.contains('open') ? closeNav() : openNav();
+  }
+
+  trigger?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleNav();
+  });
+  document.addEventListener('click', (e) => {
+    if (!dropdown?.contains(e.target as Node) && !trigger?.contains(e.target as Node)) closeNav();
+  });
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      toggleNav();
+    }
+    if (e.key === 'Escape') closeNav();
+  });
+  search?.addEventListener('input', (e) => {
+    const q = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    items.forEach((item) => {
+      const keys = ((item.dataset.keys || '') + ' ' + item.textContent).toLowerCase();
+      item.classList.toggle('hidden', !!q && !keys.includes(q));
+    });
+  });
+  items.forEach((item) => item.addEventListener('click', closeNav));
+</script>
+
+<style>
+  .nav-anchor {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    z-index: 100;
+  }
+  .nav-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 18px 12px 14px;
+    background: rgba(253, 250, 245, 0.85);
+    backdrop-filter: blur(24px) saturate(160%);
+    -webkit-backdrop-filter: blur(24px) saturate(160%);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    box-shadow: var(--shadow-dropdown);
+  }
+  .nav-trigger:hover {
+    border-color: rgba(26, 20, 16, 0.22);
+    color: var(--ink);
+    transform: translateY(-1px);
+  }
+  .nav-trigger.open {
+    border-color: rgba(26, 20, 16, 0.22);
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+  }
+  .nav-trigger :global(.tree-icon) {
+    width: 16px;
+    height: 16px;
+    color: var(--aurora-6);
+  }
+  .nav-trigger :global(.chev) {
+    width: 12px;
+    height: 12px;
+    color: var(--ink-mute);
+    transition: transform 0.25s ease;
+  }
+  .nav-trigger.open :global(.chev) {
+    transform: rotate(180deg);
+  }
+  .nav-trigger .name-slug {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 14px;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-transform: none;
+    padding-right: 10px;
+    border-right: 1px solid var(--line);
+  }
+
+  .nav-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 380px;
+    max-height: 0;
+    overflow: hidden;
+    background: rgba(253, 250, 245, 0.96);
+    backdrop-filter: blur(40px) saturate(180%);
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid transparent;
+    border-radius: 14px;
+    box-shadow: var(--shadow-dropdown);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+      transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+      max-height 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.25s ease;
+    pointer-events: none;
+  }
+  .nav-dropdown.open {
+    max-height: 80vh;
+    opacity: 1;
+    transform: translateY(0);
+    border-color: var(--line);
+    pointer-events: auto;
+  }
+
+  .nav-search {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-search svg {
+    width: 14px;
+    height: 14px;
+    color: var(--ink-mute);
+    flex-shrink: 0;
+  }
+  .nav-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: var(--serif);
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .nav-search input::placeholder {
+    color: var(--ink-mute);
+    font-style: italic;
+  }
+  .nav-search .esc {
+    font-family: var(--mono);
+    font-size: 9px;
+    padding: 3px 6px;
+    background: var(--line-soft);
+    border-radius: 4px;
+    color: var(--ink-mute);
+    letter-spacing: 0.1em;
+  }
+
+  .nav-tree {
+    max-height: calc(80vh - 60px);
+    overflow-y: auto;
+    padding: 8px 0 12px;
+  }
+  .nav-section {
+    padding: 8px 14px 2px;
+  }
+  .nav-section-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+    padding: 0 4px;
+  }
+  .nav-section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px;
+    margin: 1px 0;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--ink);
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+  .nav-item:hover {
+    background: linear-gradient(95deg, rgba(255, 138, 91, 0.1), rgba(255, 107, 157, 0.06));
+  }
+  .nav-item .branch {
+    width: 14px;
+    color: var(--ink-mute);
+    font-family: var(--mono);
+    font-size: 11px;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+  .nav-item .icon {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: rgba(255, 138, 91, 0.12);
+    color: var(--aurora-6);
+    flex-shrink: 0;
+  }
+  .nav-item .icon :global(svg) {
+    width: 12px;
+    height: 12px;
+  }
+  .nav-item .label {
+    font-family: var(--serif);
+    font-size: 15px;
+    font-weight: 500;
+    flex: 1;
+    letter-spacing: -0.005em;
+  }
+  .nav-item .desc {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--ink-mute);
+    letter-spacing: 0.04em;
+  }
+  .nav-item :global(.hidden) {
+    display: none;
+  }
+
+  @media (max-width: 700px) {
+    .nav-anchor {
+      top: 16px;
+      left: 16px;
+      right: 16px;
+    }
+    .nav-dropdown {
+      width: 100%;
+    }
+    .nav-trigger {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>

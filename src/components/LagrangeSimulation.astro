@@ -1,0 +1,563 @@
+---
+---
+
+<div
+  class="lagrange-sim"
+  data-lagrange-sim
+  role="img"
+  aria-label="Animated double pendulum simulation with a compact phase portrait"
+>
+  <div class="lagrange-sim__math" aria-hidden="true">
+    <div class="lagrange-sim__formula-block">
+      <span class="lagrange-sim__formula-label">Lagrangian</span>
+      <span class="lagrange-sim__formula-text">L = T - V</span>
+    </div>
+    <div class="lagrange-sim__formula-divider"></div>
+    <div class="lagrange-sim__formula-block lagrange-sim__formula-block--wide">
+      <span class="lagrange-sim__formula-label">Euler-Lagrange</span>
+      <span class="lagrange-sim__formula-text">d/dt(∂L/∂q̇ᵢ) - ∂L/∂qᵢ = 0</span>
+    </div>
+  </div>
+  <div class="lagrange-sim__stage">
+    <a
+      class="lagrange-sim__link"
+      href="https://en.wikipedia.org/wiki/Double_pendulum"
+      target="_blank"
+      rel="noopener"
+      aria-label="Double pendulum on Wikipedia"
+    >
+      Wikipedia ↗
+    </a>
+    <canvas class="lagrange-sim__pendulum" data-lagrange-pendulum aria-hidden="true"></canvas>
+    <div class="lagrange-sim__phase-shell">
+      <canvas class="lagrange-sim__phase" data-lagrange-phase aria-hidden="true"></canvas>
+      <span class="lagrange-sim__phase-label">theta2 / omega2</span>
+    </div>
+
+    <div class="lagrange-sim__overlay">
+      <span class="lagrange-sim__eyebrow">Simulation · Double pendulum</span>
+      <div class="lagrange-sim__wordmark">
+        <h3 class="lagrange-sim__title">Lagrange<span class="lagrange-sim__dot">.</span></h3>
+        <span class="lagrange-sim__hint">live simulation</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  type State = [number, number, number, number];
+
+  function startLagrangeSimulation(root: HTMLElement) {
+    const pendulumCanvas = root.querySelector<HTMLCanvasElement>('[data-lagrange-pendulum]');
+    const phaseCanvas = root.querySelector<HTMLCanvasElement>('[data-lagrange-phase]');
+    if (!pendulumCanvas || !phaseCanvas) return;
+
+    const pendulumContext = pendulumCanvas.getContext('2d');
+    const phaseContext = phaseCanvas.getContext('2d');
+    if (!pendulumContext || !phaseContext) return;
+
+    let pendulumWidth = 0;
+    let pendulumHeight = 0;
+    let phaseWidth = 0;
+    let phaseHeight = 0;
+    let devicePixelRatio = 1;
+    let visible = true;
+    let frameHandle = 0;
+
+    const mass1 = 1;
+    const mass2 = 1;
+    const length = 1;
+    const gravity = 1;
+    let theta1 = 2.05;
+    let theta2 = 2.45;
+    let omega1 = 0;
+    let omega2 = 0;
+
+    const trace: Array<[number, number]> = [];
+    const phaseTrace: Array<[number, number]> = [];
+    const maxTracePoints = 140;
+    const maxPhasePoints = 420;
+
+    function resize() {
+      const pendulumRect = pendulumCanvas.getBoundingClientRect();
+      const phaseRect = phaseCanvas.getBoundingClientRect();
+      if (!pendulumRect.width || !pendulumRect.height || !phaseRect.width || !phaseRect.height) return;
+
+      devicePixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+
+      pendulumCanvas.width = Math.round(pendulumRect.width * devicePixelRatio);
+      pendulumCanvas.height = Math.round(pendulumRect.height * devicePixelRatio);
+      phaseCanvas.width = Math.round(phaseRect.width * devicePixelRatio);
+      phaseCanvas.height = Math.round(phaseRect.height * devicePixelRatio);
+
+      pendulumContext.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      phaseContext.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+
+      pendulumWidth = pendulumRect.width;
+      pendulumHeight = pendulumRect.height;
+      phaseWidth = phaseRect.width;
+      phaseHeight = phaseRect.height;
+      phaseContext.clearRect(0, 0, phaseWidth, phaseHeight);
+    }
+
+    function wrapAngle(angle: number) {
+      let normalized = (angle + Math.PI) % (2 * Math.PI);
+      if (normalized < 0) normalized += 2 * Math.PI;
+      return normalized - Math.PI;
+    }
+
+    function derivatives(state: State): State {
+      const [angle1, angle2, velocity1, velocity2] = state;
+      const delta = angle1 - angle2;
+      const denominator = 2 * mass1 + mass2 - mass2 * Math.cos(2 * delta);
+      const acceleration1 =
+        (-gravity * (2 * mass1 + mass2) * Math.sin(angle1)
+          - mass2 * gravity * Math.sin(angle1 - 2 * angle2)
+          - 2 * Math.sin(delta) * mass2 * (velocity2 * velocity2 + velocity1 * velocity1 * Math.cos(delta))) /
+        denominator;
+      const acceleration2 =
+        (2 * Math.sin(delta) *
+          (velocity1 * velocity1 * (mass1 + mass2)
+            + gravity * (mass1 + mass2) * Math.cos(angle1)
+            + velocity2 * velocity2 * mass2 * Math.cos(delta))) /
+        denominator;
+
+      return [velocity1, velocity2, acceleration1, acceleration2];
+    }
+
+    function rk4(state: State, stepSize: number): State {
+      const k1 = derivatives(state);
+      const k2 = derivatives([
+        state[0] + (stepSize * k1[0]) / 2,
+        state[1] + (stepSize * k1[1]) / 2,
+        state[2] + (stepSize * k1[2]) / 2,
+        state[3] + (stepSize * k1[3]) / 2,
+      ]);
+      const k3 = derivatives([
+        state[0] + (stepSize * k2[0]) / 2,
+        state[1] + (stepSize * k2[1]) / 2,
+        state[2] + (stepSize * k2[2]) / 2,
+        state[3] + (stepSize * k2[3]) / 2,
+      ]);
+      const k4 = derivatives([
+        state[0] + stepSize * k3[0],
+        state[1] + stepSize * k3[1],
+        state[2] + stepSize * k3[2],
+        state[3] + stepSize * k3[3],
+      ]);
+
+      return [
+        state[0] + (stepSize * (k1[0] + 2 * k2[0] + 2 * k3[0] + k4[0])) / 6,
+        state[1] + (stepSize * (k1[1] + 2 * k2[1] + 2 * k3[1] + k4[1])) / 6,
+        state[2] + (stepSize * (k1[2] + 2 * k2[2] + 2 * k3[2] + k4[2])) / 6,
+        state[3] + (stepSize * (k1[3] + 2 * k2[3] + 2 * k3[3] + k4[3])) / 6,
+      ];
+    }
+
+    function drawPendulum() {
+      const armLength = Math.min(pendulumWidth, pendulumHeight) * 0.32;
+      const centerX = pendulumWidth * 0.5;
+      const centerY = pendulumHeight * 0.34;
+      const x1 = centerX + armLength * Math.sin(theta1);
+      const y1 = centerY + armLength * Math.cos(theta1);
+      const x2 = x1 + armLength * Math.sin(theta2);
+      const y2 = y1 + armLength * Math.cos(theta2);
+
+      trace.push([x2, y2]);
+      if (trace.length > maxTracePoints) trace.shift();
+
+      pendulumContext.clearRect(0, 0, pendulumWidth, pendulumHeight);
+
+      if (trace.length > 1) {
+        const total = trace.length;
+        pendulumContext.lineCap = 'round';
+        pendulumContext.lineJoin = 'round';
+
+        for (let index = 1; index < total; index++) {
+          const progress = index / total;
+          pendulumContext.strokeStyle = `rgba(201, 53, 111, ${0.16 + progress * 0.42})`;
+          pendulumContext.lineWidth = 0.4 + progress * 1.2;
+          pendulumContext.beginPath();
+          pendulumContext.moveTo(trace[index - 1][0], trace[index - 1][1]);
+          pendulumContext.lineTo(trace[index][0], trace[index][1]);
+          pendulumContext.stroke();
+        }
+      }
+
+      pendulumContext.strokeStyle = 'rgba(74, 26, 38, 0.36)';
+      pendulumContext.lineWidth = 1.2;
+      pendulumContext.beginPath();
+      pendulumContext.moveTo(centerX, centerY);
+      pendulumContext.lineTo(x1, y1);
+      pendulumContext.lineTo(x2, y2);
+      pendulumContext.stroke();
+
+      pendulumContext.fillStyle = '#7a2c3d';
+      pendulumContext.beginPath();
+      pendulumContext.arc(centerX, centerY, 2.4, 0, Math.PI * 2);
+      pendulumContext.fill();
+
+      const bobOne = pendulumContext.createRadialGradient(x1 - 2, y1 - 2, 1, x1, y1, 5);
+      bobOne.addColorStop(0, '#fff5cc');
+      bobOne.addColorStop(0.55, '#ffc966');
+      bobOne.addColorStop(1, '#e25e54');
+      pendulumContext.fillStyle = bobOne;
+      pendulumContext.beginPath();
+      pendulumContext.arc(x1, y1, 4.8, 0, Math.PI * 2);
+      pendulumContext.fill();
+
+      const bobTwo = pendulumContext.createRadialGradient(x2 - 2, y2 - 2, 1, x2, y2, 6);
+      bobTwo.addColorStop(0, '#ffe5b8');
+      bobTwo.addColorStop(0.5, '#f08055');
+      bobTwo.addColorStop(1, '#c83a52');
+      pendulumContext.fillStyle = bobTwo;
+      pendulumContext.beginPath();
+      pendulumContext.arc(x2, y2, 5.8, 0, Math.PI * 2);
+      pendulumContext.fill();
+    }
+
+    function drawPhase() {
+      const omegaMax = 4.5;
+      const wrappedTheta2 = wrapAngle(theta2);
+      phaseTrace.push([wrappedTheta2, omega2]);
+      if (phaseTrace.length > maxPhasePoints) phaseTrace.shift();
+
+      phaseContext.fillStyle = 'rgba(255, 245, 235, 0.12)';
+      phaseContext.fillRect(0, 0, phaseWidth, phaseHeight);
+
+      phaseContext.strokeStyle = 'rgba(168, 58, 81, 0.16)';
+      phaseContext.lineWidth = 0.5;
+      phaseContext.beginPath();
+      phaseContext.moveTo(0, phaseHeight / 2);
+      phaseContext.lineTo(phaseWidth, phaseHeight / 2);
+      phaseContext.moveTo(phaseWidth / 2, 0);
+      phaseContext.lineTo(phaseWidth / 2, phaseHeight);
+      phaseContext.stroke();
+
+      if (phaseTrace.length < 2) return;
+
+      const last = phaseTrace[phaseTrace.length - 1];
+      const previous = phaseTrace[phaseTrace.length - 2];
+      if (Math.abs(last[0] - previous[0]) >= Math.PI) return;
+
+      const x1 = ((previous[0] + Math.PI) / (2 * Math.PI)) * (phaseWidth - 12) + 6;
+      const y1 = phaseHeight - (((previous[1] + omegaMax) / (2 * omegaMax)) * (phaseHeight - 12) + 6);
+      const x2 = ((last[0] + Math.PI) / (2 * Math.PI)) * (phaseWidth - 12) + 6;
+      const y2 = phaseHeight - (((last[1] + omegaMax) / (2 * omegaMax)) * (phaseHeight - 12) + 6);
+
+      phaseContext.strokeStyle = 'rgba(220, 70, 90, 0.74)';
+      phaseContext.lineWidth = 0.9;
+      phaseContext.lineCap = 'round';
+      phaseContext.beginPath();
+      phaseContext.moveTo(x1, y1);
+      phaseContext.lineTo(x2, y2);
+      phaseContext.stroke();
+
+      phaseContext.fillStyle = 'rgba(220, 70, 90, 0.96)';
+      phaseContext.beginPath();
+      phaseContext.arc(x2, y2, 1.45, 0, Math.PI * 2);
+      phaseContext.fill();
+    }
+
+    function frame() {
+      if (!visible) {
+        frameHandle = 0;
+        return;
+      }
+
+      if (!pendulumWidth || !phaseWidth) resize();
+      if (!pendulumWidth || !phaseWidth) {
+        frameHandle = requestAnimationFrame(frame);
+        return;
+      }
+
+      const stepSize = 0.035;
+      for (let step = 0; step < 2; step++) {
+        [theta1, theta2, omega1, omega2] = rk4([theta1, theta2, omega1, omega2], stepSize);
+      }
+
+      drawPendulum();
+      drawPhase();
+
+      frameHandle = requestAnimationFrame(frame);
+    }
+
+    const resizeObserver = new ResizeObserver(resize);
+    resizeObserver.observe(pendulumCanvas);
+    resizeObserver.observe(phaseCanvas);
+
+    const intersectionObserver = new IntersectionObserver((entries) => {
+      visible = entries.some((entry) => entry.isIntersecting);
+      if (visible && frameHandle === 0) {
+        frameHandle = requestAnimationFrame(frame);
+      }
+    });
+    intersectionObserver.observe(root);
+
+    resize();
+    frameHandle = requestAnimationFrame(frame);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-lagrange-sim]').forEach(startLagrangeSimulation);
+</script>
+
+<style>
+  .lagrange-sim {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 12px;
+    min-height: 0;
+  }
+
+  .lagrange-sim__math {
+    display: grid;
+    grid-template-columns: minmax(0, 188px) auto minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 14px;
+    border: 1px solid rgba(168, 58, 81, 0.12);
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(8px) saturate(145%);
+    -webkit-backdrop-filter: blur(8px) saturate(145%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  }
+
+  .lagrange-sim__formula-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  .lagrange-sim__formula-label {
+    font-family: var(--mono);
+    font-size: 8px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(122, 44, 61, 0.58);
+  }
+
+  .lagrange-sim__formula-text {
+    font-family: var(--serif);
+    font-size: clamp(15px, 1.5vw, 19px);
+    line-height: 1.2;
+    color: #4a1a26;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+
+  .lagrange-sim__formula-block--wide .lagrange-sim__formula-text {
+    font-size: clamp(14px, 1.35vw, 18px);
+  }
+
+  .lagrange-sim__formula-divider {
+    width: 1px;
+    align-self: stretch;
+    background: rgba(168, 58, 81, 0.16);
+  }
+
+  .lagrange-sim__stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 140px;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 16px;
+    border: 1px solid rgba(168, 58, 81, 0.14);
+    background:
+      radial-gradient(120% 90% at 78% -10%, rgba(252, 217, 192, 0.9) 0%, transparent 55%),
+      radial-gradient(80% 100% at 8% 110%, rgba(247, 185, 194, 0.74) 0%, transparent 60%),
+      linear-gradient(135deg, rgba(253, 235, 208, 0.95) 0%, rgba(250, 215, 208, 0.92) 60%, rgba(245, 194, 204, 0.92) 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    isolation: isolate;
+  }
+
+  .lagrange-sim__pendulum,
+  .lagrange-sim__phase {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .lagrange-sim__link {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border: 1px solid rgba(168, 58, 81, 0.16);
+    border-radius: 999px;
+    background: rgba(253, 250, 245, 0.74);
+    backdrop-filter: blur(16px) saturate(145%);
+    -webkit-backdrop-filter: blur(16px) saturate(145%);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(74, 26, 38, 0.82);
+    transition: all 0.25s ease;
+  }
+
+  .lagrange-sim__link:hover {
+    background: rgba(74, 26, 38, 0.9);
+    border-color: rgba(74, 26, 38, 0.9);
+    color: var(--paper);
+    transform: translateY(-1px);
+  }
+
+  .lagrange-sim__phase-shell {
+    position: relative;
+    border-left: 1px solid rgba(168, 58, 81, 0.12);
+    background: rgba(255, 250, 245, 0.22);
+  }
+
+  .lagrange-sim__phase-label {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    max-width: 42px;
+    font-family: var(--mono);
+    font-size: 6.5px;
+    line-height: 1.25;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(122, 44, 61, 0.58);
+    pointer-events: none;
+  }
+
+  .lagrange-sim__overlay {
+    position: absolute;
+    inset: 8px 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+
+  .lagrange-sim__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: var(--mono);
+    font-size: 7px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #a83a51;
+  }
+
+  .lagrange-sim__eyebrow::before {
+    content: '';
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: #c8455a;
+    flex-shrink: 0;
+  }
+
+  .lagrange-sim__wordmark {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .lagrange-sim__title {
+    font-family: var(--display);
+    font-size: clamp(20px, 2.1vw, 28px);
+    line-height: 0.9;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    color: #1a1313;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.32);
+  }
+
+  .lagrange-sim__dot {
+    background: linear-gradient(95deg, #e94555 0%, #f08454 50%, #ecb05a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-style: italic;
+  }
+
+  .lagrange-sim__hint {
+    font-family: var(--mono);
+    font-size: 6.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(122, 44, 61, 0.74);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 900px) {
+    .lagrange-sim__math {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    .lagrange-sim__formula-divider {
+      display: none;
+    }
+
+    .lagrange-sim__stage {
+      grid-template-columns: minmax(0, 1fr) 110px;
+    }
+
+    .lagrange-sim__phase-label {
+      max-width: none;
+      font-size: 7px;
+    }
+
+    .lagrange-sim__eyebrow,
+    .lagrange-sim__hint {
+      font-size: 7.5px;
+    }
+
+    .lagrange-sim__title {
+      font-size: clamp(24px, 4vw, 34px);
+    }
+
+    .lagrange-sim__formula-text,
+    .lagrange-sim__formula-block--wide .lagrange-sim__formula-text {
+      white-space: normal;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .lagrange-sim__stage {
+      grid-template-columns: minmax(0, 1fr) 84px;
+    }
+
+    .lagrange-sim__link {
+      top: 12px;
+      right: 12px;
+      padding: 7px 10px;
+      font-size: 8.5px;
+    }
+
+    .lagrange-sim__overlay {
+      inset: 10px 12px;
+    }
+
+    .lagrange-sim__math {
+      padding: 10px 12px;
+    }
+
+    .lagrange-sim__formula-text {
+      font-size: 14px;
+    }
+
+    .lagrange-sim__wordmark {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 4px;
+    }
+  }
+</style>

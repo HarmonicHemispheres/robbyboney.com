@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+
+type Project = {
+  title: string;
+  description: string;
+  href: string;
+  tag: string;
+  accent?: string;
+};
+
+const projects: Project[] = [
+  {
+    title: 'MagicPill Labs',
+    description: 'Agentic AI for the messy middle of real work. The firm.',
+    href: 'https://magicpilllabs.com',
+    tag: 'The Firm',
+    accent: 'var(--aurora-6)',
+  },
+  {
+    title: 'Hexero',
+    description: 'An app that sits at the intersection of tooling and play.',
+    href: '#',
+    tag: 'App',
+    accent: 'var(--aurora-1)',
+  },
+  {
+    title: 'Games Built With AI',
+    description: 'A collection of small games made collaboratively with AI.',
+    href: 'https://harmonichemispheres.github.io/AI-Built-Games/',
+    tag: 'Play',
+    accent: 'var(--aurora-3)',
+  },
+];
+---
+
+<BaseLayout title="Projects — Robby Boney" description="What I build and why.">
+  <div class="page">
+    <header class="projects-header reveal r1">
+      <div class="tag-line">Work · Shipped · In-flight</div>
+      <h1 class="prose-h1">Things I'm <em>building</em>.</h1>
+    </header>
+
+    <div class="projects-grid">
+      {projects.map((p, i) => (
+        <a href={p.href} class={`card project-card reveal r${Math.min(i + 2, 9)}`} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>
+          <div class="tag"><span class="pip" style={`background:${p.accent}`}></span>{p.tag}</div>
+          <div class="corner-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17 17 7M7 7h10v10" />
+            </svg>
+          </div>
+          <h3 class="project-title">{p.title}</h3>
+          <p class="project-desc">{p.description}</p>
+        </a>
+      ))}
+    </div>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .projects-header { margin-bottom: 32px; }
+  .tag-line {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .prose-h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(48px, 6vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin: 0;
+  }
+  .prose-h1 em {
+    font-style: italic;
+    background: linear-gradient(105deg, var(--aurora-6) 0%, var(--aurora-1) 50%, var(--aurora-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .project-card {
+    text-decoration: none;
+    color: inherit;
+    padding: 32px 28px 28px;
+    min-height: 220px;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .project-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 30px;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+  }
+  .project-desc {
+    font-family: var(--serif);
+    color: var(--ink-soft);
+    font-size: 15px;
+    line-height: 1.5;
+    margin-top: 4px;
+  }
+</style>

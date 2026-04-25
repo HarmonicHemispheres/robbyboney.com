@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+
+type Post = {
+  title: string;
+  description: string;
+  href: string;
+  date: string;
+  external?: boolean;
+};
+
+const posts: Post[] = [
+  {
+    title: 'Viability in the Age of ASI',
+    description: 'A unified mathematical framework for products, people, and markets under AI commoditization.',
+    href: '/content/viability-in-the-age-of-asi.html',
+    date: 'Mar 2026',
+  },
+  {
+    title: "A Product Manager's Top Ways to Grow Your Career",
+    description: 'Strategies to advance your career as a product manager.',
+    href: 'https://robbyboney.notion.site/A-Few-Keys-to-Growing-Your-Career-f074cc19139f4103994cc419eccfec6f',
+    date: '2024',
+    external: true,
+  },
+];
+---
+
+<BaseLayout title="Writing — Robby Boney" description="Essays, notes, and longform on building and becoming.">
+  <div class="page page-narrow">
+    <header class="blog-header reveal r1">
+      <div class="tag-line">Words · Notes · Essays</div>
+      <h1 class="prose" style="margin:0;"><span class="prose-h1">Recent <em>writing</em>.</span></h1>
+      <p class="blog-sub">A slow trickle of essays on software, systems, and the joinery between them.</p>
+    </header>
+
+    <div class="post-list">
+      {posts.map((p, i) => (
+        <a
+          href={p.href}
+          class={`card post-card reveal r${Math.min(i + 2, 9)}`}
+          target={p.external ? '_blank' : undefined}
+          rel={p.external ? 'noopener' : undefined}
+        >
+          <div class="post-meta">
+            <span class="date">{p.date}</span>
+            {p.external && <span class="ext">external ↗</span>}
+          </div>
+          <h3 class="post-title">{p.title}</h3>
+          <p class="post-desc">{p.description}</p>
+          <div class="corner-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M7 17 17 7M7 7h10v10" />
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-header { margin-bottom: 32px; }
+  .tag-line {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 16px;
+  }
+  .prose-h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(48px, 6vw, 72px);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .prose-h1 em {
+    font-style: italic;
+    background: linear-gradient(105deg, var(--aurora-6) 0%, var(--aurora-1) 50%, var(--aurora-3) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .blog-sub {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 300;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    font-size: 19px;
+    max-width: 50ch;
+  }
+
+  .post-list { display: flex; flex-direction: column; gap: 16px; }
+
+  .post-card {
+    text-decoration: none;
+    color: inherit;
+    padding: 28px 32px;
+    gap: 8px;
+  }
+  .post-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    margin-bottom: 4px;
+  }
+  .post-meta .ext { color: var(--aurora-6); }
+  .post-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--ink);
+  }
+  .post-desc {
+    font-family: var(--serif);
+    color: var(--ink-soft);
+    font-size: 16px;
+    line-height: 1.5;
+    margin-top: 6px;
+    max-width: 60ch;
+  }
+
+  @media (max-width: 700px) {
+    .post-card { padding: 24px; }
+    .post-title { font-size: 24px; }
+  }
+</style>
