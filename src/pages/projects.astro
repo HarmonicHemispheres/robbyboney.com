@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 type Project = {
   title: string;
   description: string;
-  href: string;
+  href?: string;
   tag: string;
   accent?: string;
 };
@@ -20,8 +20,7 @@ const projects: Project[] = [
   },
   {
     title: 'Hexero',
-    description: 'An app that sits at the intersection of tooling and play.',
-    href: '#',
+    description: 'An in-progress app sitting at the intersection of tooling, interfaces, and play.',
     tag: 'App',
     accent: 'var(--aurora-1)',
   },
@@ -44,16 +43,24 @@ const projects: Project[] = [
 
     <div class="projects-grid">
       {projects.map((p, i) => (
-        <a href={p.href} class={`card project-card reveal r${Math.min(i + 2, 9)}`} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>
-          <div class="tag"><span class="pip" style={`background:${p.accent}`}></span>{p.tag}</div>
-          <div class="corner-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M7 17 17 7M7 7h10v10" />
-            </svg>
-          </div>
-          <h3 class="project-title">{p.title}</h3>
-          <p class="project-desc">{p.description}</p>
-        </a>
+        p.href ? (
+          <a href={p.href} class={`card project-card reveal r${Math.min(i + 2, 9)}`} target={p.href.startsWith('http') ? '_blank' : undefined} rel={p.href.startsWith('http') ? 'noopener' : undefined}>
+            <div class="tag"><span class="pip" style={`background:${p.accent}`}></span>{p.tag}</div>
+            <div class="corner-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M7 17 17 7M7 7h10v10" />
+              </svg>
+            </div>
+            <h3 class="project-title">{p.title}</h3>
+            <p class="project-desc">{p.description}</p>
+          </a>
+        ) : (
+          <article class={`card project-card project-card--static reveal r${Math.min(i + 2, 9)}`}>
+            <div class="tag"><span class="pip" style={`background:${p.accent}`}></span>{p.tag}</div>
+            <h3 class="project-title">{p.title}</h3>
+            <p class="project-desc">{p.description}</p>
+          </article>
+        )
       ))}
     </div>
 
@@ -101,6 +108,12 @@ const projects: Project[] = [
     min-height: 220px;
     justify-content: flex-end;
     gap: 8px;
+  }
+  .project-card--static {
+    cursor: default;
+  }
+  .project-card--static:hover {
+    transform: none;
   }
   .project-title {
     font-family: var(--display);

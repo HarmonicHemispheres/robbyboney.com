@@ -179,7 +179,7 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
         <img
           class="about-portrait"
           src="/assets/images/robby-portrait.svg"
-          alt="Portrait placeholder for Robby Boney"
+          alt="Portrait illustration of Robby Boney"
           loading="eager"
         />
       </div>
@@ -223,7 +223,7 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
             {plottedTimeline.map((item) => (
               <article
                 class="timeline-item"
-                style={`grid-row:${item.topRow} / span ${item.spanYears};--lane:${item.lane};--accent:${item.accent};z-index:${item.zIndex};`}
+                style={`grid-row:${item.topRow} / span ${item.spanYears};grid-column:${item.lane + 1};--accent:${item.accent};z-index:${item.zIndex};`}
               >
                 <div class="timeline-point" aria-hidden="true"></div>
                 <div class="timeline-body">
@@ -249,7 +249,7 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
 
 <style>
   .about-page {
-    max-width: 1120px;
+    max-width: 1340px;
   }
 
   .about-hero,
@@ -407,20 +407,19 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
   .timeline-shell {
     display: grid;
     grid-template-columns: 78px minmax(0, 1fr);
-    gap: 26px;
-    align-items: start;
-  }
-
-  .timeline-years,
-  .timeline-rules,
-  .timeline-cards {
-    display: grid;
     grid-template-rows: repeat(var(--timeline-rows), minmax(84px, auto));
+    gap: 0 18px;
+    align-items: stretch;
   }
 
   .timeline-years {
     position: relative;
     z-index: 1;
+    align-self: stretch;
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-rows: subgrid;
   }
 
   .timeline-year {
@@ -437,13 +436,26 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
 
   .timeline-plot {
     position: relative;
-    padding-left: 34px;
-    --lane-step: 54px;
+    display: grid;
+    grid-column: 2;
+    grid-row: 1 / -1;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: subgrid;
+    overflow-x: auto;
+    padding-left: 20px;
+    --timeline-track-width: clamp(148px, 15.5vw, 216px);
+    --timeline-lane-gap: clamp(6px, 0.9vw, 16px);
+    --timeline-grid-min: calc((var(--timeline-lanes) * var(--timeline-track-width)) + ((var(--timeline-lanes) - 1) * var(--timeline-lane-gap)));
   }
 
   .timeline-rules {
-    position: absolute;
-    inset: 0;
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: subgrid;
+    width: max(100%, var(--timeline-grid-min));
+    justify-self: start;
     pointer-events: none;
   }
 
@@ -455,7 +467,7 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
   .timeline-rule::before {
     content: '';
     position: absolute;
-    left: -34px;
+    left: -20px;
     top: -5px;
     width: 10px;
     height: 10px;
@@ -471,20 +483,26 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
 
   .timeline-cards {
     position: relative;
+    grid-column: 1;
+    grid-row: 1 / -1;
+    display: grid;
+    width: max(100%, var(--timeline-grid-min));
+    justify-self: start;
+    grid-template-columns: repeat(var(--timeline-lanes), minmax(var(--timeline-track-width), 1fr));
+    column-gap: var(--timeline-lane-gap);
+    grid-template-rows: subgrid;
   }
 
   .timeline-item {
     position: relative;
     display: flex;
     align-self: stretch;
-    width: calc(100% - ((var(--timeline-lanes) - 1) * var(--lane-step)));
-    margin-left: calc(var(--lane) * var(--lane-step));
     padding: 12px 0 14px;
   }
 
   .timeline-point {
     position: absolute;
-    left: -41px;
+    left: -27px;
     top: 30px;
     width: 15px;
     height: 15px;
@@ -629,10 +647,12 @@ const concurrentYears = activityByYear.filter((item) => item.count > 1).length;
     }
 
     .timeline-plot {
+      grid-column: 1;
       overflow-x: auto;
       padding-left: 28px;
       padding-bottom: 6px;
-      --lane-step: 42px;
+      --timeline-track-width: 220px;
+      --timeline-lane-gap: 16px;
     }
 
     .timeline-rules,

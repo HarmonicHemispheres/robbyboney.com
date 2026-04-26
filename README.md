@@ -54,3 +54,19 @@ are no longer served — Astro owns routing now.
 
 `npm run build` → `dist/`. Point Vercel (or any static host) at `dist/`. Vercel
 Analytics hook is included in `BaseLayout.astro` and no-ops locally.
+
+## Copilot update workflow
+
+This repo now includes workspace instructions in `.github/copilot-instructions.md`.
+If you tell Copilot `please update`, it should treat that as a shorthand request to:
+
+- review the public pages and visible cards for stale content or layout issues
+- update research-backed copy in the relevant page or content files
+- keep the existing design language unless you ask for a redesign
+- run `npm run build` before closing out the task
+
+Use a more specific prompt when you already know the target, for example:
+
+- `please update the homepage cards and verify build`
+- `please update the about page with current experience`
+- `please update the research and blog summaries`

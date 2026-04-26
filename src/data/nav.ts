@@ -10,6 +10,14 @@ export type NavItem = {
 
 export const navItems: NavItem[] = [
   {
+    id: 'home',
+    label: 'Home',
+    href: '/',
+    desc: '/',
+    keywords: 'home index landing root',
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10.5V20h14v-9.5"/></svg>`,
+  },
+  {
     id: 'about',
     label: 'About',
     href: '/about',
