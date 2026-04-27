@@ -63,6 +63,15 @@ const ataraxiaUrl = 'https://soundcloud.com/harmonichemispheres/ataraxia-origina
 const evokingPassionUrl = 'https://soundcloud.com/raenborn/evokingpassion-1/s-fFzseYjzLrK';
 const evokingPassionPlayerUrl = 'https://api.soundcloud.com/tracks/1542351691';
 const evokingPassionSecretToken = 's-fFzseYjzLrK';
+const linkedInUrl = 'https://www.linkedin.com/in/robby-boney-717486133/';
+const ctaRotatorPhrases = [
+  'an AI agent',
+  'a quiet tool',
+  'an internal app',
+  'a consultancy',
+  'something weird',
+  'a better workflow',
+];
 const startedDates = {
   identity: 'Started 2014',
   gol: 'Started 1970',
@@ -120,7 +129,6 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
         <div class="id-stamps">
           {identity.stamps.map((s) => <span class="stamp">{s}</span>)}
         </div>
-        <span class="card-started">{startedDates.identity}</span>
       </article>
 
       <!-- GAME OF LIFE — a little living demo, nod to the old site -->
@@ -328,15 +336,28 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
       </article>
 
       <!-- CONTACT -->
-      <article class="card card-contact pos-contact reveal r8">
-        <h3 class="card-title">Let's <em>build something</em>.</h3>
-        <a class="email-row" href="mailto:robby.b@magicpilllabs.com">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="4" width="20" height="16" rx="2" />
-            <path d="m22 6-10 7L2 6" />
-          </svg>
-          robby.b@magicpilllabs.com
-        </a>
+      <article class="card card-contact pos-contact reveal r8" data-cta-card>
+        <div class="cta-b-prefix">What if we built</div>
+        <h3 class="cta-b-headline">
+          <em data-cta-rotator>{ctaRotatorPhrases[0]}</em><span class="cta-b-cursor"></span>
+          <br />
+          together?
+        </h3>
+        <div class="cta-b-actions">
+          <a class="cta-b-pill" href="mailto:robby.b@magicpilllabs.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2" />
+              <path d="m22 6-10 7L2 6" />
+            </svg>
+            Email me
+          </a>
+          <a class="cta-b-pill" href={linkedInUrl} target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M7 17 17 7M7 7h10v10" />
+            </svg>
+            Connect on LinkedIn
+          </a>
+        </div>
         <span class="card-started">{startedDates.contact}</span>
       </article>
 
@@ -996,38 +1017,129 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
 
   /* ============ CONTACT ============ */
   .card-contact {
-    background: linear-gradient(135deg, rgba(255, 138, 91, 0.18), rgba(245, 215, 110, 0.12)), rgba(253, 250, 245, 0.65);
+    background:
+      linear-gradient(135deg, rgba(255, 138, 91, 0.18), rgba(245, 215, 110, 0.12)),
+      rgba(253, 250, 245, 0.65);
     cursor: default;
-    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    justify-content: space-between;
-    padding: 24px 36px;
-    gap: 24px;
+    text-align: center;
+    padding: 40px 30px;
+    gap: 18px;
+    isolation: isolate;
   }
-  .card-contact:hover { transform: translateY(-2px); }
-  .card-contact .card-title { font-size: clamp(24px, 2.6vw, 36px); margin: 0; }
-  .email-row {
-    display: inline-flex;
+  .card-contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 138, 91, 0.18), transparent 50%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+  .card-contact:hover::before {
+    opacity: 1;
+  }
+  .cta-b-prefix {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 18px;
+    position: relative;
+    z-index: 2;
+  }
+  .cta-b-prefix::before,
+  .cta-b-prefix::after {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--ink-mute);
+  }
+  .cta-b-headline {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: clamp(34px, 4.6vw, 62px);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    max-width: 16ch;
+    position: relative;
+    z-index: 2;
+  }
+  .cta-b-headline em {
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(95deg, var(--aurora-6), var(--aurora-1), var(--aurora-3));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: cta-shimmer 6s linear infinite;
+    display: inline-block;
+    min-width: 8ch;
+    text-align: center;
+  }
+  .cta-b-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 0.85em;
+    background: var(--aurora-6);
+    margin-left: 2px;
+    margin-bottom: -0.06em;
+    animation: cta-blink 1s ease-in-out infinite;
+    vertical-align: text-bottom;
+  }
+  @keyframes cta-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  @keyframes cta-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+  .cta-b-actions {
+    margin-top: 6px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: relative;
+    z-index: 2;
+  }
+  .cta-b-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
     border: 1px solid var(--line);
     border-radius: 100px;
     background: rgba(253, 250, 245, 0.7);
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     color: var(--ink);
     text-decoration: none;
     transition: all 0.3s ease;
-    flex-shrink: 0;
     position: relative;
     z-index: 6;
   }
-  .email-row:hover {
+  .cta-b-pill svg {
+    width: 12px;
+    height: 12px;
+  }
+  .cta-b-pill:hover {
     background: var(--ink);
     color: var(--paper);
     border-color: var(--ink);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
+  }
+  .card-contact .card-started {
+    z-index: 3;
   }
 
   /* ============ SOCIALS ============ */
@@ -1114,7 +1226,10 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     .card-music, .card-games { min-height: 200px; }
     .card-lagrange { min-height: 260px; }
     .card-blog { min-height: 320px; }
-    .card-contact { flex-direction: column; align-items: flex-start; min-height: 140px; }
+    .card-contact { min-height: 220px; padding: 34px 22px; }
+    .cta-b-prefix { font-size: 10px; }
+    .cta-b-headline { font-size: clamp(30px, 9vw, 44px); max-width: 11ch; }
+    .cta-b-actions { justify-content: flex-start; width: 100%; }
     .card-socials { min-height: 120px; }
     .socials-row { gap: 16px; }
     .social-link { width: 48px; height: 48px; }
@@ -1278,4 +1393,70 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
       // Best-effort enhancement: if the SoundCloud widget API fails to load,
       // the cards still function as links.
     });
+</script>
+
+<script is:inline define:vars={{ ctaRotatorPhrases }}>
+  const ctaCard = document.querySelector('[data-cta-card]');
+  const ctaRotator = document.querySelector('[data-cta-rotator]');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (ctaCard && ctaRotator && Array.isArray(ctaRotatorPhrases) && ctaRotatorPhrases.length) {
+    let phraseIndex = 0;
+    let charIndex = ctaRotatorPhrases[0].length;
+    let isDeleting = true;
+    let ctaTimer;
+
+    ctaRotator.textContent = ctaRotatorPhrases[0];
+
+    function runCtaTick() {
+      const currentPhrase = ctaRotatorPhrases[phraseIndex];
+
+      if (!isDeleting) {
+        ctaRotator.textContent = currentPhrase.slice(0, charIndex + 1);
+        charIndex += 1;
+
+        if (charIndex === currentPhrase.length) {
+          isDeleting = true;
+          ctaTimer = window.setTimeout(runCtaTick, 1800);
+          return;
+        }
+
+        ctaTimer = window.setTimeout(runCtaTick, 60 + Math.random() * 40);
+        return;
+      }
+
+      ctaRotator.textContent = currentPhrase.slice(0, charIndex - 1);
+      charIndex -= 1;
+
+      if (charIndex === 0) {
+        isDeleting = false;
+        phraseIndex = (phraseIndex + 1) % ctaRotatorPhrases.length;
+      }
+
+      ctaTimer = window.setTimeout(runCtaTick, 30);
+    }
+
+    if (!reduceMotion) {
+      ctaTimer = window.setTimeout(runCtaTick, 1800);
+    }
+
+    ctaCard.addEventListener('pointermove', (event) => {
+      const rect = ctaCard.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      ctaCard.style.setProperty('--mx', `${x}%`);
+      ctaCard.style.setProperty('--my', `${y}%`);
+    });
+
+    ctaCard.addEventListener('pointerleave', () => {
+      ctaCard.style.setProperty('--mx', '50%');
+      ctaCard.style.setProperty('--my', '50%');
+    });
+
+    window.addEventListener('beforeunload', () => {
+      if (ctaTimer) {
+        clearTimeout(ctaTimer);
+      }
+    });
+  }
 </script>
