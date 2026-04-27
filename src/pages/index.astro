@@ -398,8 +398,8 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
   .pos-harmonic { grid-column: 6 / span 7; grid-row: 8 / span 3; }
   .pos-lagrange { grid-column: 1 / -1; grid-row: 11 / span 4; }
   .pos-evoking  { grid-column: 1 / -1; grid-row: 15 / span 2; }
-  .pos-contact  { grid-column: 1 / -1; grid-row: 17 / span 2; }
-  .pos-socials  { grid-column: 1 / -1; grid-row: 19 / span 2; }
+  .pos-contact  { grid-column: 1 / -1; grid-row: 17 / span 3; }
+  .pos-socials  { grid-column: 1 / -1; grid-row: 20 / span 2; }
 
   /* ============ IDENTITY ============ */
   .card-identity {
@@ -1024,8 +1024,9 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 40px 30px;
-    gap: 18px;
+    min-height: 320px;
+    padding: 48px 30px 56px;
+    gap: 22px;
     isolation: isolate;
   }
   .card-contact::before {
@@ -1063,7 +1064,7 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     font-family: var(--display);
     font-weight: 300;
     font-size: clamp(34px, 4.6vw, 62px);
-    line-height: 1;
+    line-height: 1.06;
     letter-spacing: -0.04em;
     color: var(--ink);
     max-width: 16ch;
