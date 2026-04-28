@@ -25,6 +25,23 @@ const blogPosts = [
   { title: 'More essays on Medium', date: 'Ongoing', href: 'https://medium.com/@robbyb_77782' },
 ];
 
+const featuredPaper = {
+  href: 'https://pmc.ncbi.nlm.nih.gov/articles/PMC8418111/',
+  journal: 'Frontiers in Neurology',
+  section: 'Neuro-Otology',
+  published: '17 Aug 2021',
+  titleLead: 'Detecting Novel Ototoxins and Potentiation of Ototoxicity by',
+  titleEmphasis: 'Disease Settings',
+  excerpt:
+    'Over 100 drugs and chemicals are associated with permanent hearing loss, tinnitus, and vestibular deficits, collectively known as ototoxicity. The ototoxic potential of drugs is rarely assessed in pre-clinical drug development or clinical trials, so this debilitating side-effect is often discovered only after patients begin treatment.',
+  authors: ['Allison B. Coffin', 'Robert Boney', 'Jordan Hill', 'Cong Tian', 'Peter S. Steyger'],
+  stats: [
+    { value: 'Review', label: 'Type' },
+    { value: 'Vol 12', label: 'Journal' },
+    { value: '2021', label: 'Year' },
+  ],
+};
+
 const socials = [
   {
     name: 'GitHub',
@@ -259,6 +276,60 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
         <a class="card-link" href="/blog" aria-label="Blog"></a>
       </article>
 
+      <article class="card card-paper pos-paper reveal r7" id="research-paper">
+        <div class="paper-top">
+          <div class="paper-journal-pill">
+            <span class="paper-journal-mark" aria-hidden="true"></span>
+            <div class="paper-journal-copy">
+              <span class="paper-journal-name">{featuredPaper.journal}</span>
+              <span class="paper-journal-section">{featuredPaper.section}</span>
+            </div>
+          </div>
+
+          <div class="paper-meta">
+            <div class="paper-published">
+              <span class="paper-meta-label">Published</span>
+              <span class="paper-meta-value">{featuredPaper.published}</span>
+            </div>
+            <div class="corner-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M7 7h10v10"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="paper-body">
+          <h3 class="paper-title">{featuredPaper.titleLead} <em>{featuredPaper.titleEmphasis}</em>.</h3>
+          <blockquote class="paper-excerpt">{featuredPaper.excerpt}</blockquote>
+        </div>
+
+        <div class="paper-bottom">
+          <p class="paper-authors">
+            {featuredPaper.authors.map((author, index) => (
+              <span class={author === 'Robert Boney' ? 'paper-author paper-author--highlight' : 'paper-author'}>
+                {author}{index < featuredPaper.authors.length - 1 ? ', ' : ''}
+              </span>
+            ))}
+          </p>
+
+          <div class="paper-stats" aria-label="Publication details">
+            {featuredPaper.stats.map((stat) => (
+              <div class="paper-stat">
+                <span class="paper-stat-value">{stat.value}</span>
+                <span class="paper-stat-label">{stat.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <a
+          class="card-link"
+          href={featuredPaper.href}
+          target="_blank"
+          rel="noopener"
+          aria-label={`Open paper: ${featuredPaper.titleLead} ${featuredPaper.titleEmphasis}`}
+        ></a>
+      </article>
+
       <article class="card card-lagrange pos-lagrange reveal" id="lagrange">
         <LagrangeSimulation />
         <span class="card-started">{startedDates.lagrange}</span>
@@ -396,10 +467,11 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
   .pos-games    { grid-column: 9 / span 4; grid-row: 5 / span 3; }
   .pos-blog     { grid-column: 1 / span 5; grid-row: 8 / span 3; }
   .pos-harmonic { grid-column: 6 / span 7; grid-row: 8 / span 3; }
-  .pos-lagrange { grid-column: 1 / -1; grid-row: 11 / span 4; }
-  .pos-evoking  { grid-column: 1 / -1; grid-row: 15 / span 2; }
-  .pos-contact  { grid-column: 1 / -1; grid-row: 17 / span 3; }
-  .pos-socials  { grid-column: 1 / -1; grid-row: 20 / span 2; }
+  .pos-paper    { grid-column: 1 / -1; grid-row: 11 / span 4; }
+  .pos-lagrange { grid-column: 1 / -1; grid-row: 15 / span 4; }
+  .pos-evoking  { grid-column: 1 / -1; grid-row: 19 / span 2; }
+  .pos-contact  { grid-column: 1 / -1; grid-row: 21 / span 3; }
+  .pos-socials  { grid-column: 1 / -1; grid-row: 24 / span 2; }
 
   /* ============ IDENTITY ============ */
   .card-identity {
@@ -690,6 +762,181 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     text-transform: uppercase;
     color: var(--ink-mute);
     white-space: nowrap;
+  }
+
+  /* ============ PAPER ============ */
+  .card-paper {
+    background:
+      radial-gradient(circle at 18% 14%, rgba(245, 215, 110, 0.2) 0%, transparent 26%),
+      radial-gradient(circle at 85% 44%, rgba(201, 53, 111, 0.12) 0%, transparent 34%),
+      linear-gradient(135deg, rgba(253, 250, 245, 0.88) 0%, rgba(255, 244, 235, 0.78) 100%);
+    padding: 28px 32px 30px;
+    gap: 22px;
+  }
+  .card-paper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(110deg, rgba(255, 255, 255, 0.18) 0%, transparent 45%, rgba(255, 255, 255, 0.12) 100%);
+    opacity: 0.65;
+    pointer-events: none;
+  }
+  .paper-top,
+  .paper-body,
+  .paper-bottom {
+    position: relative;
+    z-index: 2;
+  }
+  .paper-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .paper-journal-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid rgba(26, 20, 16, 0.1);
+    border-radius: 999px;
+    background: rgba(253, 250, 245, 0.72);
+    box-shadow: 0 16px 34px -24px rgba(201, 53, 111, 0.35);
+  }
+  .paper-journal-mark {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, var(--aurora-6), var(--aurora-4));
+    clip-path: polygon(0 0, 100% 0, 58% 50%, 100% 100%, 0 100%);
+    border-radius: 4px 0 0 4px;
+    flex-shrink: 0;
+  }
+  .paper-journal-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .paper-journal-name {
+    font-family: var(--display);
+    font-size: 23px;
+    font-style: italic;
+    line-height: 1;
+    color: var(--ink);
+  }
+  .paper-journal-section {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+  }
+  .paper-meta {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-left: auto;
+  }
+  .card-paper .corner-arrow {
+    position: static;
+    top: auto;
+    right: auto;
+    flex-shrink: 0;
+    margin-top: 4px;
+  }
+  .paper-published {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    padding-top: 8px;
+  }
+  .paper-meta-label,
+  .paper-meta-value {
+    font-family: var(--mono);
+    text-transform: uppercase;
+  }
+  .paper-meta-label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    color: var(--ink-mute);
+  }
+  .paper-meta-value {
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    color: var(--ink);
+  }
+  .paper-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .paper-title {
+    max-width: 25ch;
+    font-family: var(--display);
+    font-size: clamp(34px, 4vw, 56px);
+    font-weight: 400;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .paper-title em {
+    font-style: italic;
+    color: var(--aurora-6);
+  }
+  .paper-excerpt {
+    max-width: 72ch;
+    padding-left: 18px;
+    border-left: 3px solid rgba(201, 53, 111, 0.48);
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.9vw, 24px);
+    font-style: italic;
+    line-height: 1.28;
+    color: var(--ink-soft);
+  }
+  .paper-bottom {
+    margin-top: auto;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .paper-authors {
+    flex: 1;
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.7vw, 24px);
+    line-height: 1.3;
+    color: var(--ink-soft);
+  }
+  .paper-author--highlight {
+    color: var(--ink);
+    font-weight: 700;
+  }
+  .paper-stats {
+    display: flex;
+    align-items: flex-end;
+    gap: 26px;
+    flex-shrink: 0;
+  }
+  .paper-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+  }
+  .paper-stat-value {
+    font-family: var(--display);
+    font-size: clamp(24px, 2.4vw, 38px);
+    line-height: 1;
+    color: var(--ink);
+  }
+  .paper-stat-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
   }
 
   /* ============ LAGRANGE ============ */
@@ -1210,6 +1457,7 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     .pos-games    { grid-column: span 5; grid-row: span 3; }
     .pos-blog     { grid-column: span 12; grid-row: span 3; }
     .pos-harmonic { grid-column: span 12; grid-row: span 2; }
+    .pos-paper    { grid-column: span 12; grid-row: span 4; }
     .pos-lagrange { grid-column: span 12; grid-row: span 4; }
     .pos-evoking  { grid-column: span 12; grid-row: span 2; }
     .pos-contact  { grid-column: span 12; grid-row: span 2; }
@@ -1218,7 +1466,7 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
   @media (max-width: 700px) {
     .bento { grid-auto-rows: auto; gap: 12px; }
     .pos-identity, .pos-gol, .pos-mpl,
-    .pos-music, .pos-games, .pos-blog, .pos-lagrange, .pos-harmonic, .pos-evoking, .pos-contact, .pos-socials {
+    .pos-music, .pos-games, .pos-blog, .pos-paper, .pos-lagrange, .pos-harmonic, .pos-evoking, .pos-contact, .pos-socials {
       grid-column: span 12;
       grid-row: auto;
     }
@@ -1227,6 +1475,11 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     .card-music, .card-games { min-height: 200px; }
     .card-lagrange { min-height: 260px; }
     .card-blog { min-height: 320px; }
+    .card-paper {
+      min-height: 380px;
+      padding: 24px 22px 24px;
+      gap: 18px;
+    }
     .card-contact { min-height: 220px; padding: 34px 22px; }
     .cta-b-prefix { font-size: 10px; }
     .cta-b-headline { font-size: clamp(30px, 9vw, 44px); max-width: 11ch; }
@@ -1235,6 +1488,37 @@ const soundcloudPlayerUrl = (trackUrl: string, secretToken?: string) => {
     .socials-row { gap: 16px; }
     .social-link { width: 48px; height: 48px; }
     .music-row { flex-direction: column; align-items: flex-start; gap: 18px; }
+    .paper-top,
+    .paper-bottom {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .paper-meta {
+      width: 100%;
+      justify-content: space-between;
+      margin-left: 0;
+    }
+    .paper-published {
+      align-items: flex-start;
+      padding-top: 0;
+    }
+    .paper-title,
+    .paper-excerpt {
+      max-width: none;
+    }
+    .paper-excerpt {
+      font-size: 18px;
+      padding-left: 14px;
+    }
+    .paper-stats {
+      width: 100%;
+      justify-content: flex-start;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .paper-stat {
+      align-items: flex-start;
+    }
     .waveform { width: 100%; }
     .card-started {
       right: 14px;
